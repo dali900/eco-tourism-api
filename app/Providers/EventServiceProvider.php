@@ -2,6 +2,14 @@
 
 namespace App\Providers;
 
+use App\Events\FreeTrialExpiredEvent;
+use App\Events\FreeTrialStartedEvent;
+use App\Events\SubscriptionExpiredEvent;
+use App\Events\SubscriptionExpiringEvent;
+use App\Listeners\FreeTrialExpiredListener;
+use App\Listeners\FreeTrialStartedListener;
+use App\Listeners\SubscriptionExpiringListener;
+use App\Listeners\SubscriptionExpiredListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +25,18 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        SubscriptionExpiredEvent::class => [
+            //SubscriptionExpiredListener::class
+        ],
+        SubscriptionExpiringEvent::class => [
+            //SubscriptionExpiringListener::class
+        ],
+        FreeTrialStartedEvent::class => [
+            FreeTrialStartedListener::class
+        ],
+        FreeTrialExpiredEvent::class => [
+            FreeTrialExpiredListener::class
         ],
     ];
 
