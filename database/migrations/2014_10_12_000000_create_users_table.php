@@ -15,8 +15,21 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('role', 128)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('first_name', 128)->nullable();
+            $table->string('last_name', 128)->nullable();
+            $table->string('status', 64)->nullable();
+            $table->boolean('active')->default(1)->nullable();
+            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->string('note', 255)->nullable()->nullable();
+            $table->dateTime('last_login')->nullable();
+            $table->string('ip', 32)->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')
+				->onDelete('set null')
+				->onUpdate('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
