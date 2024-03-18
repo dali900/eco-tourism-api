@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('first_name', 128)->nullable();
             $table->string('last_name', 128)->nullable();
-            $table->string('status', 64)->nullable();
             $table->boolean('active')->default(1)->nullable();
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->string('note', 255)->nullable()->nullable();

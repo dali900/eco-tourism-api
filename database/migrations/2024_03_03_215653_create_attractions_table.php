@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('places', function (Blueprint $table) {
             $table->id('id');
             $table->string('name', 128);
+            $table->bigInteger('parent_id')->unsigned()->nullable();
             $table->text('description');
             $table->string('latitude', 32)->nullable();
             $table->string('longitude', 32)->nullable();
@@ -23,6 +24,9 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
             
+            $table->foreign('parent_id')->references('id')->on('places')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
@@ -45,7 +49,7 @@ return new class extends Migration
         Schema::create('attractions', function (Blueprint $table) {
             $table->id();
             $table->string('name', 128);
-            $table->integer('attraction_category_id')->unsigned()->nullable();
+            $table->integer('category_id')->unsigned()->nullable();
             $table->string('title', 256)->nullable();
             $table->string('subtitle', 256)->nullable();
             $table->text('content')->nullable();
@@ -66,7 +70,7 @@ return new class extends Migration
             $table->foreign('place_id')->references('id')->on('places')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('attraction_category_id')->references('id')->on('attraction_categories')
+            $table->foreign('category_id')->references('id')->on('attraction_categories')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
         });
