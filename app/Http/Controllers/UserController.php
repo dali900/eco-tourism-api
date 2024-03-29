@@ -64,7 +64,7 @@ class UserController extends Controller
      * @param Request $requset
      * @return \Illuminate\Http\Response
      */
-    public function getAuthUser(Request $requset, $app)
+    public function getAuthUser(Request $requset)
     {
         $user = auth()->user();
         $userResource = null;
@@ -84,7 +84,7 @@ class UserController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function getUser($app, $id)
+    public function getUser($id)
     {
         $user = User::find($id);
         if(!$user){
@@ -103,19 +103,10 @@ class UserController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function getUserProfile($app, $id)
+    public function getUserProfile($id)
     {
         $authUser = auth()->user();
-        $user = User::with([
-            'lastSubscription' => function ($query) use ($app) {
-                //$query->with('plan');
-                $query->where('subscriptions.app', $app);
-            }, 
-            'lastFreeTrial' => function ($query) use ($app) {
-                //$query->with('plan');
-                $query->where('free_trials.app', $app);
-            }, 
-        ])->withCount(['subscriptions', 'freeTrials'])->find($id);
+        $user = User::find($id);
         if(!$user){
             return $this->responseNotFound();
         }
@@ -133,10 +124,9 @@ class UserController extends Controller
         ]);
     }
     
-    public function getUserProfiles(Request $request, $app)
+    public function getUserProfiles(Request $request)
     {
         $filters = $request->all();
-        $filters['app'] = $app;
         $usersQuery = $this->userProfileRepository->getAllFiltered($filters);
         return $this->responseSuccess([
             'user_profiles' => UserProfileResourcePaginated::make($usersQuery->paginate($request->perPage ?? 30)),
@@ -159,10 +149,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getAll(Request $request, $app)
+    public function getAll(Request $request)
     {
         $perPage = $request->perPage ?? 20;
-        $users = $this->userRepository->getAllFiltered($request->all(), $app);
+        $users = $this->userRepository->getAllFiltered($request->all());
 
         $userPaginated = $users->paginate($perPage);
 
@@ -178,42 +168,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $app)
+    public function create(Request $request)
     {
-        $user = $this->createUser($request, $app);
-
-        //Send email notification to admin
-        if(config('app.env') === 'production' || config('app.env') === 'staging' || str_contains(config('mail.mailers.smtp.host'), 'mailtrap')){
-            $data = [
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email,
-                'company_name' => $user->company_name,
-                'position' => $user->position,
-                'phone_number' => $user->phone_number,
-                'app_data' => App::getData($app),
-            ];
-            Mail::to('office@actamedia.rs')->send(new \App\Mail\UserCreatedMail($data));
-        } 
-
-        //Start free trial
-        $freeTrialPlan = FreeTrialPlan::getStandardPlan();
-        if ($freeTrialPlan) {
-            $requiredData = [
-                'user_id' => $user->id,
-                'free_trial_plan_id' => $freeTrialPlan->id
-            ];
-            $freeTrialData = $this->freeTrialRepository->prepareData($requiredData);
-            $freeTrialData['app'] = $app;
-            $freeTrial = FreeTrial::create($freeTrialData);
-            //send email only in production or if in local then only to mailtrap
-            if(config('app.env') === 'production' || str_contains(config('mail.mailers.smtp.host'), 'mailtrap')){
-                $user->notify((new FreeTrialStartedNotification($freeTrial, $app)));
-            }
-            //event(new FreeTrialStartedEvent($freeTrial, $data["app"]));
-        } else {
-            logger()->error("Free trial plan is missing.");
-        }
+        $user = $this->createUser($request);
 
         return $this->responseSuccess([
             'user' => UserResource::make($user)
@@ -226,9 +183,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function adminCreate(Request $request, $app)
+    public function adminCreate(Request $request)
     {
-        $user = $this->createUser($request, $app);
+        $user = $this->createUser($request);
 
         $userProfile = $this->userProfileRepository->getByUserId($user->id);
 
@@ -240,7 +197,7 @@ class UserController extends Controller
 
     }
 
-    private function createUser (Request $request, $app) {
+    private function createUser (Request $request) {
         $attr = $request->validate([
             'first_name' => 'required|string',
             'last_name' => 'required|string',
@@ -261,18 +218,6 @@ class UserController extends Controller
         $data['user_id'] = $authUser ? $authUser->id : null;
         $data['password'] = Hash::make($data['password']);
 
-        /* $userByMail = User::where('email', $data['email'])->first();
-        $userByMailAndApp = $this->userProfileRepository->getByMailAndApp($data['email'], $app);
-        if(empty($userByMail)) {
-            $data["app"] = $app;
-            $user = User::create($data);
-        } else if (empty($userByMailAndApp)) {
-            $user = User::find($userByMail->id);
-            $data["app"] = $user->app . ',' . $app;
-            $user->update($data);
-        } */
-
-        $data["app"] = $app;
         $user = User::create($data);
         $user->update($data);
 
@@ -286,7 +231,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $app, $id)
+    public function update(Request $request, $id)
     {
         $user = User::find($id);
         if(!$user){
@@ -297,7 +242,6 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        $appsString = App::BZR_KEY.','.App::EI_KEY.','.App::ZZS_KEY;
         Validator::make($data, [
             'first_name' => 'sometimes|required|string',
             'last_name' => 'sometimes|required|string',
@@ -330,16 +274,6 @@ class UserController extends Controller
 
         if ($authUser->getAccessLevel() === User::ROLE_LEVEL_SUPER_ADMIN) {
             //admin resourece
-            $user->load([
-                'lastSubscription' => function ($query) use ($app) {
-                    //$query->with('plan');
-                    $query->where('subscriptions.app', $app);
-                }, 
-                'lastFreeTrial' => function ($query) use ($app) {
-                    //$query->with('plan');
-                    $query->where('free_trials.app', $app);
-                }, 
-            ]);
             $userResource = UserProfileResource::make($user);
         } else {
             $userResource = UserResource::make($user);
@@ -357,7 +291,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updatePassword(Request $request, $app, $id)
+    public function updatePassword(Request $request, $id)
     {
         $user = User::find($id);
         if(!$user){
@@ -386,7 +320,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function delete($app, $id)
+    public function delete($id)
     {
         $user = User::find($id);
         if (!$user) {
@@ -408,60 +342,5 @@ class UserController extends Controller
             'roles' => User::getRoles()
         ]);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function contact(Request $request, $app)
-    {
-        $attr = $request->validate(
-            [
-                'first_name' => 'required|string',
-                'last_name' => 'required|string',
-                'email' => 'required|string',
-                'company_name' => 'required|string',
-                'phone_number' => 'required|string',
-            ], 
-            [], 
-            [
-                'company_name' => 'Kompanija',
-                'phone_number' => 'Kontakt telefon'
-            ]
-        );
-        $details = $request->all();
-        $details['app'] = $app;
-        
-        $user = auth()->user();
-        if ($user) {
-            if (empty($user->company_name) && !empty($details['company_name'])) {
-                $user->company_name = $details['company_name'];
-            }
-            if (empty($user->phone_number) && !empty($details['phone_number'])) {
-                $user->phone_number = $details['phone_number'];
-            }
-            if ($user->isDirty()) {
-                $user->save();
-            }
-            $user->notify((new ContactConfirmationNotification($app)));
-        } else if (!empty($details['email'])){
-            Mail::to($details['email'])->send(new \App\Mail\ContactConfirmationMail($app));
-        }
-
-        if(config('app.env') === 'production' || str_contains(config('mail.mailers.smtp.host'), 'mailtrap')){
-            Mail::to('bzrportal@actamedia.rs')
-                ->send(new \App\Mail\ContactMail($details));
-        }
-
-        return $this->responseSuccess([
-            'message' => "Success sent mail"
-        ]);
-    }
-
-    public function exportExcel($app) 
-    {
-        return Excel::download(new ExportUsers($app), 'users.xls');
-    }    
+  
 }

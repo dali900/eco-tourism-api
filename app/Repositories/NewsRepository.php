@@ -18,10 +18,9 @@ class NewsRepository extends ModelRepository implements NewsRepositoryInterface
      * @param array $params
      * @return void
      */
-    public function getAllFiltered($params = [], $app)
+    public function getAllFiltered($params = [])
     {
         $model = $this->model;
-        $model = $model->where('app', '=', $app);
         
         //Global search
         if (!empty($params['global'])) {

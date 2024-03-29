@@ -30,7 +30,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function get($app, $id)
+    public function get($id)
     {
         $news = News::with('image')->find($id);
         if(!$news){
@@ -47,10 +47,10 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getAll(Request $request, $app)
+    public function getAll(Request $request)
     {
         $perPage = $request->perPage ?? 20;
-        $news = $this->newsRepository->getAllFiltered($request->all(), $app);
+        $news = $this->newsRepository->getAllFiltered($request->all());
         $news->with('image');
         $newsPaginated = $news->paginate($perPage);
         $newsResource = NewsResourcePaginated::make($newsPaginated);
@@ -65,7 +65,7 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $app)
+    public function create(Request $request)
     {
         $attr = $request->validate([
 			'title' => 'required|string',
@@ -77,7 +77,6 @@ class NewsController extends Controller
         $user = auth()->user();
 
         $data = $request->all();
-        $data['app'] = $app;
         $data['user_id'] = $user->id;
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
 
@@ -100,7 +99,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $app, $id)
+    public function update(Request $request, $id)
     {
         $attr = $request->validate([
 			'title' => 'required|string',
@@ -115,7 +114,6 @@ class NewsController extends Controller
         }
 
         $data = $request->all();
-        $data['app'] = $app;
         $data['user_id'] = $user->id;
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
 
@@ -137,7 +135,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function delete($app, $id)
+    public function delete($id)
     {
         $news = News::find($id);
         if(!$news){
@@ -155,7 +153,7 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deleteFile($app, $id)
+    public function deleteFile($id)
     {
         $news = News::find($id);
         if(!$news){

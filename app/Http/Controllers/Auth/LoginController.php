@@ -18,14 +18,14 @@ class LoginController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request, $app)
+    public function login(Request $request)
     {
         $attr = $request->validate([
             'email' => 'required|string|email|',
             'password' => 'required|string|min:6'
         ]);
 
-        Log::channel('user_logins')->info($app, [
+        Log::channel('user_logins')->info('login-data', [
             $request->all(), 
             'ip' => $request->getClientIp(), 
             'browser' => $request->header('User-Agent')
@@ -45,33 +45,12 @@ class LoginController extends Controller
             return $this->responseForbidden("Nema pristup portalu.");
         }
         $planExpired = false;
-        if (!$user->hasAuthorAccess()){
-            $lastSubscription = $user->getLastSubsription($app);
-            $lastFreeTrial = $user->getLastFreeTrial($app);
-            $message = null;
+        $message = null;
 
-            if ($lastSubscription) {
-                if (!$lastSubscription->isActive()) {
-                    $planExpired = false;
-                    $message = "Vaša pretplata je istekla.";
-                } else {
-                    $planExpired = true;
-                }
-            }
-
-            if ($lastFreeTrial && !$planExpired) {
-                if (!$lastFreeTrial->isActive()) {
-                    $planExpired = false;
-                    $message = $message ?? "Vaša probni period je istekao."; //subscriptiom message has priorty
-                } else {
-                    $planExpired = true;
-                }
-            }
-        }
-
-        if ($user->email !== 'it@actamedia.rs') {
+        /* if ($user->email !== 'it@actamedia.rs') {
             $user->tokens()->delete();
-        }
+        } */
+        $user->tokens()->delete();
         $authToken = $user->createToken(User::AUTH_TOKEN)->plainTextToken;
 
         return $this->responseSuccess([

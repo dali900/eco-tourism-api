@@ -34,7 +34,6 @@ class UserProfileResource extends JsonResource
             'status' => $this->status,
             'active' => $this->active,
             'note' => $this->note,
-            'apps' => $this->app ? array_map('trim', explode(',', $this->app)) : null,
             //'subscriptions' => SubscriptionResource::collection($this->subscriptions),
             'subscriptions_count' => $this->subscriptions_count,
             'subscriptions' => $this->when($this->relationLoaded('subscriptions'), function() {

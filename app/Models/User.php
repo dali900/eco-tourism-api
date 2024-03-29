@@ -21,7 +21,7 @@ class User extends Authenticatable
 	/**
 	 * Sanctum auth token name
 	 */
-	const AUTH_TOKEN = 'actamedia-auth';
+	const AUTH_TOKEN = 'eko-auth';
 	/**
 	 * App super admin user
 	 */
@@ -43,18 +43,6 @@ class User extends Authenticatable
 	 */
 	const ROLE_AUTHOR = 'author';
 	/**
-	 * Paid user
-	 */
-	const ROLE_PAID = 'paid';//TODO: delete
-	/**
-	 * Free trial user
-	 */
-	const ROLE_FREE_TRIAL = 'free_trial';//TODO: delete
-	/**
-	 * Guest user
-	 */
-	const ROLE_GUEST = 'guest';
-	/**
 	 * Regular user
 	 */
 	const ROLE_USER = 'user';
@@ -62,8 +50,8 @@ class User extends Authenticatable
 	const ROLE_LEVEL_SUPER_ADMIN = 5;
 	const ROLE_LEVEL_ADMIN = 4;
 	//const ROLE_LEVEL_MANAGER = 3;
-	const ROLE_LEVEL_EDITOR = 3;
-	const ROLE_LEVEL_AUTHOR = 2;
+	const ROLE_LEVEL_EDITOR = 2;
+	const ROLE_LEVEL_AUTHOR = 1;
 	const ROLE_LEVEL_USER = 0;
 
 
@@ -77,15 +65,10 @@ class User extends Authenticatable
 		'first_name',
 		'last_name',
 		'email',
-		'company_name',
-		'phone_number',
-		'position',
 		'password',
 		'user_id',
 		'role',
-		'status',
 		'active',
-		'app',
 		'note'
 	];
 

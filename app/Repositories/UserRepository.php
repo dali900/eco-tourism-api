@@ -20,10 +20,9 @@ class UserRepository extends ModelRepository implements UserRepositoryInterface
      * @param array $params
      * @return void
      */
-    public function getAllFiltered($params = [], $app)
+    public function getAllFiltered($params = [])
     {
         $model = $this->model;
-        $model = $model->where('app', 'LIKE', '%' . $app . '%');
 
         //Global search
         if (!empty($params['global'])) {
