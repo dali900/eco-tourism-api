@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('parent_id')->nullable();
             $table->string('name', 256);
+            $table->tinyInteger('visible')->default(1);
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
             
@@ -27,8 +28,9 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('id');
             $table->string('title', 256);
-            $table->integer('news_category_id')->unsigned()->nullable();
             $table->string('subtitle', 256);
+            $table->integer('category_id')->unsigned()->nullable();
+            $table->string('slug', 128)->nullable();
             $table->text('summary');
             $table->text('text');
             $table->dateTime('publish_date');
@@ -39,7 +41,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('news_category_id')->references('id')->on('news_categories')
+            $table->foreign('category_id')->references('id')->on('news_categories')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
         });

@@ -4,19 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-class Place extends Model
+class NewsCategory extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRecursiveRelationships;
+
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'user_id',
+        'visible',
+    ];
 
     /**
-     * Attraction
+     * News
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function attractions()
+    public function news()
     {
-        return $this->hasMany(Attraction::class);
+        return $this->hasMany(News::class);
     }
 
     /**
