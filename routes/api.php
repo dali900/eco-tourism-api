@@ -10,6 +10,8 @@ use App\Http\Controllers\VideoController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleTypeController;
+use App\Http\Controllers\AttractionCategoryController;
+use App\Http\Controllers\AttractionController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuestionTypeController;
@@ -111,19 +113,19 @@ Route::prefix('/videos')->group(function () {
     Route::get('/{id}', [VideoController::class, 'get']);
 });
 
-//Regulations
-Route::prefix('/regulations')->group(function () {
-    Route::get('/', [RegulationController::class, 'getAll']);
-    Route::get('/{id}', [RegulationController::class, 'get']);
-    Route::post('/download-file/{id}', [RegulationController::class, 'downloadFile']);
+//Attracations
+Route::prefix('/attractions')->group(function () {
+    Route::get('/', [AttractionController::class, 'index']);
+    Route::get('/{id}', [AttractionController::class, 'get']);
+    Route::post('/download-file/{id}', [AttractionController::class, 'downloadFile']);
 });
 
-//Regulation types
-Route::prefix('/regulation-types')->group(function () {
-    Route::get('/', [RegulationTypeController::class, 'getAll']);
-    Route::get('/roots', [RegulationTypeController::class, 'getRoots']);
-    Route::get('/tree', [RegulationTypeController::class, 'getTree']);
-    Route::get('/{id}', [RegulationTypeController::class, 'get']);
+//Attracation categories
+Route::prefix('/attraction-categories')->group(function () {
+    Route::get('/', [AttractionCategoryController::class, 'index']);
+    Route::get('/roots', [AttractionCategoryController::class, 'getRoots']);
+    Route::get('/tree', [AttractionCategoryController::class, 'getTree']);
+    Route::get('/{id}', [AttractionCategoryController::class, 'get']);
 });
 
 //Banners for everyone
@@ -153,13 +155,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/delete', [FilesController::class, 'delete']);
         Route::post('/delete-tmp-file', [FilesController::class, 'deleteTmpFile']);
     });
-    //Regulations
-    Route::prefix('/regulations')->middleware('role:author')->group(function () {
-        Route::post('/', [RegulationController::class, 'create']);
-        Route::put('/{id}', [RegulationController::class, 'update']);
-        Route::delete('/{id}', [RegulationController::class, 'delete']);
-        Route::delete('/file/{id}', [RegulationController::class, 'deleteFile']);
-        Route::delete('/preview-file/{id}', [RegulationController::class, 'deletePreviewFile']);
+    //Attractions
+    Route::prefix('/attractions')->middleware('role:author')->group(function () {
+        Route::post('/', [AttractionController::class, 'store']);
+        Route::put('/{id}', [AttractionController::class, 'update']);
+        Route::delete('/{id}', [AttractionController::class, 'delete']);
+        Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
     });
     //Users
     Route::prefix('/users')->middleware('role:admin')->group(function () {

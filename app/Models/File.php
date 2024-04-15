@@ -13,6 +13,7 @@ class File extends Model
     const TAG_HTML_PREVIEW = 'html-preview';
     const TAG_PDF_PREVIEW = 'pdf-preview';
     const TAG_DOWNLOAD_FILE = 'download-file';
+    const TAG_IMAGE_FILE = 'image';
 
     protected $fillable = [
         'original_name',

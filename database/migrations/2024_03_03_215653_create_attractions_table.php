@@ -52,6 +52,7 @@ return new class extends Migration
             $table->integer('category_id')->unsigned()->nullable();
             $table->string('title', 256)->nullable();
             $table->string('subtitle', 256)->nullable();
+            $table->string('summary', 256)->nullable();
             $table->text('content')->nullable();
             $table->string('slug', 128)->nullable();
             $table->bigInteger('user_id')->unsigned()->nullable();

@@ -36,8 +36,8 @@ class FilesController extends Controller
     public function uploadMultiple(Request $request)
     {
         $files = $request->file('files');
-        $file_tag = $request->input('file_tag');
-        $is_public = $request->input('is_public');
+        $file_tag = $request->input('file_tag') ?? File::TAG_IMAGE_FILE;
+        $is_public = $request->has('is_public') ? $request->input('is_public') : 1;
         $filesCollection = collect();
         foreach ($files as $file) {
             //$path = $file->store('tmp'); //the MIME type is somehow confusing Laravel
@@ -52,9 +52,7 @@ class FilesController extends Controller
             $fileModel->is_public = (bool)$is_public;
             $filesCollection->push($fileModel);
         }
-        return $this->responseSuccess([
-            'files' => FileResource::collection($filesCollection)
-        ]);
+        return $this->responseSuccess(FileResource::collection($filesCollection));
     }
 
     /**

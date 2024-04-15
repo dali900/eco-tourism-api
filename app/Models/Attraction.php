@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\HandleFiles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Attraction extends Model
 {
-    use HasFactory;
+    use HasFactory, HandleFiles;
 
     protected $fillable = [
         'name',
-        'title',
         'category_id',
+        'title',
         'subtitle',
+        'summary',
         'content',
         'user_id',
         'place_id',
@@ -54,5 +56,24 @@ class Attraction extends Model
     public function place(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Place::class, 'place_id');
+    }
+
+    /**
+     * Image Files
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function images()
+    {
+        return $this->morphMany(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
+    }
+    /**
+     * Default Image Files
+     *
+     * 
+     */
+    public function defaultImage()
+    {
+        return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
     }
 }

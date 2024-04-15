@@ -224,9 +224,9 @@ class Controller extends BaseController
      * @param integer $code = 200
      * @return \Illuminate\Http\Response
      */
-    public function responseSuccess($data = [], $msg = "Success", $code = 200)
+    public function responseSuccess($data = [], $code = 200)
     {
-        return $this->responseSuccessMsg($msg, $data, $code);
+        return response()->json($data, $code);
     }
 
     /**
