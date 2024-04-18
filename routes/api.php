@@ -159,7 +159,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/attractions')->middleware('role:author')->group(function () {
         Route::post('/', [AttractionController::class, 'store']);
         Route::put('/{id}', [AttractionController::class, 'update']);
-        Route::delete('/{id}', [AttractionController::class, 'delete']);
+        Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
     });
     //Users
