@@ -28,7 +28,7 @@ class PlaceResource extends JsonResource
 			'visible' => $this->visible,
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'parent_id' => $this->parent_id,
-			//'parent' => PlaceResource::make($this->whenLoaded('parent')),
+			'parent' => PlaceResource::make($this->whenLoaded('parent')),
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("d.m.Y.") : null,

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Attraction\AttractionCategoryResource;
 use App\Http\Resources\Attraction\AttractionCategoryResourcePaginated;
+use App\Http\Resources\Attraction\AttractionResourcePaginated;
 use App\Models\AttractionCategory;
 use App\Repositories\AttractionCategoryRepository;
+use App\Repositories\AttractionRepository;
 use Illuminate\Http\Request;
 
 class AttractionCategoryController extends Controller
@@ -15,10 +17,19 @@ class AttractionCategoryController extends Controller
      *
      * @var AttractionCategoryRepository
      */
+    
     private $attractionCategoryRepository;
 
-    public function __construct(AttractionCategoryRepository $attractionCategoryRepository) {
+    /**
+     * AttractionRepository
+     *
+     * @var AttractionRepository
+     */
+    private $attractionRepository;
+
+    public function __construct(AttractionCategoryRepository $attractionCategoryRepository, AttractionRepository $attractionRepository) {
         $this->attractionCategoryRepository = $attractionCategoryRepository;
+        $this->attractionRepository = $attractionRepository;
     }
 
     /**
@@ -49,6 +60,36 @@ class AttractionCategoryController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function getCatagoryAttractions(Request $request, $id)
+    {
+        $perPage = $request->perPage ?? 20;
+        $category = AttractionCategory::find($id);
+
+        if (!$category) {
+            return $this->responseNotFound();
+        }
+
+        $categoriesIds = $category->descendantsAndSelf()->get()->pluck('id')->all();
+        $filters = $request->all();
+        if ($categoriesIds) {
+            $filters['category_ids'] = $categoriesIds;
+        }
+        $attractions = $this->attractionRepository->getAllFiltered($filters);
+
+        $attractions->with(['category', 'defaultImage']);
+        $attractionsPaginated = $attractions->paginate($perPage);
+        
+        $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
+        $categoryResource = AttractionCategoryResource::make($category);
+        return $this->responseSuccess([
+            'category' => $categoryResource,
+            'attractions' => $attractionResource
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -56,7 +97,16 @@ class AttractionCategoryController extends Controller
      */
     public function getRoots(Request $request)
     {
-        return $this->responseSuccess(AttractionCategory::whereNull('parent_id')->get());
+        //Can't apply constraint (limit 3) after eager loading relation, for each relation. (works only for the first relation)
+        //Solution: go through each category and use the load()
+        $categories = AttractionCategory::whereNull('parent_id')->get();
+        $categories->each(function($category) {
+            $category->load([
+                'attractions' => fn($q) => $q->limit(3)
+            ]);
+        });
+        return $this->responseSuccess($categories);
+    
     }
 
     /**

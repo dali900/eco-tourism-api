@@ -2,15 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\Attraction;
-use App\Models\User;
+use App\Models\Place;
 
-class AttractionRepository extends ModelRepository
+class PlaceRepository extends ModelRepository
 {
     protected $model;
-    private $tableName = 'attractions';
+    private $tableName = 'places';
 
-    public function __construct(Attraction $model)
+    public function __construct(Place $model)
     {
         $this->model = $model;
     }
@@ -19,15 +18,11 @@ class AttractionRepository extends ModelRepository
      * Filter and sort all models
      *
      * @param array $params
-     * @return Attraction
+     * @return Place
      */
     public function getAllFiltered($params = [])
     {
         $model = $this->model;
-        $authUser = auth()->user();
-        if (empty($authUser) || !$authUser->hasAuthorAccess()) { 
-            $model = $model->where('approved', '=', 1);
-        }
 
         //Global search
         if (!empty($params['global'])) {
@@ -41,14 +36,11 @@ class AttractionRepository extends ModelRepository
                 /* $q->orWhereHas('user', function ($query) use ($searchValue, $matchMode) {
                     $this->searchText('name', $searchValue, $matchMode, $query);
                 }); */
-                $q->orWhereHas('category', function ($query) use ($searchValue, $matchMode) {
+                $q->orWhereHas('parent_id', function ($query) use ($searchValue, $matchMode) {
                     $this->searchText('name', $searchValue, $matchMode, $query);
                 });
                 $q->orWhere("name", "LIKE", $searchValue);
-                $q->orWhere("title", "LIKE", $searchValue);
-                $q->orWhere("subtitle", "LIKE", $searchValue);
-                $q->orWhere("summary", "LIKE", $searchValue);
-                $q->orWhere("content", "LIKE", $searchValue);
+                $q->orWhere("description", "LIKE", $searchValue);
             });
         }
         //Column search
@@ -68,37 +60,31 @@ class AttractionRepository extends ModelRepository
                 $matchMode = $params[$fieldName . "_MatchMode"] ?? null;
                 $model = $this->searchText($fieldName, $searchText, $matchMode, $model);
             }
-            if (!empty($params['title'])) {
-                $fieldName = 'title';
+            if (!empty($params['description'])) {
+                $fieldName = 'description';
                 $searchText = $params[$fieldName];
                 $matchMode = $params[$fieldName . "_MatchMode"] ?? null;
                 $model = $this->searchText($fieldName, $searchText, $matchMode, $model);
             }
-            if (!empty($params['summary'])) {
-                $fieldName = 'summary';
-                $searchText = $params[$fieldName];
-                $matchMode = $params[$fieldName . "_MatchMode"] ?? null;
-                $model = $this->searchText($fieldName, $searchText, $matchMode, $model);
-            }
-            if (!empty($params['category_id'])) {
-                $fieldName = 'category_id';
+            if (!empty($params['parent_id'])) {
+                $fieldName = 'parent_id';
                 $value = $params[$fieldName];
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
-                $model = $model->where('category_id', $value)
-                    ->orWhereHas('category',  function ($query) use ($value) {
+                $model = $model->where('parent_id', $value)
+                    ->orWhereHas('parent',  function ($query) use ($value) {
                         $query->where('parent_id', $value);
                     });
             }
-            if (!empty($params['category_ids'])) {
-                $value = $params['category_ids'];
+            if (!empty($params['parent_ids'])) {
+                $value = $params['parent_ids'];
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
-                $model = $model->whereIn('category_id', $value);
+                $model = $model->whereIn('parent_ids', $value);
             }
-            if (!empty($params['approved'])) {
-                $fieldName = 'approved';
+            if (!empty($params['visible'])) {
+                $fieldName = 'visible';
                 $value = $params[$fieldName];
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
-                $model = $model->where('approved', $value === "false" ? 0 : 1);
+                $model = $model->where('visible', $value === "false" ? 0 : 1);
             }
         }
 

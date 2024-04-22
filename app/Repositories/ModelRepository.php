@@ -25,6 +25,7 @@ class ModelRepository
         DATE_AFTER: "dateAfter"
      */
     const MATCH_MODE_EQUALS = "equals";
+    const MATCH_MODE_IN = "in";
     /**
      * Construct search query for text column
      *

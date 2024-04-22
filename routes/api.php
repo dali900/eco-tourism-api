@@ -21,6 +21,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RegulationTypeController;
 use App\Http\Controllers\Plan\FreeTrialController;
 use App\Http\Controllers\Plan\SubscriptionController;
@@ -123,9 +124,16 @@ Route::prefix('/attractions')->group(function () {
 //Attracation categories
 Route::prefix('/attraction-categories')->group(function () {
     Route::get('/', [AttractionCategoryController::class, 'index']);
+    Route::get('/category/{id}', [AttractionCategoryController::class, 'getCatagoryAttractions']);
     Route::get('/roots', [AttractionCategoryController::class, 'getRoots']);
     Route::get('/tree', [AttractionCategoryController::class, 'getTree']);
     Route::get('/{id}', [AttractionCategoryController::class, 'get']);
+});
+
+//Place
+Route::prefix('/places')->group(function () {
+    Route::get('/', [PlaceController::class, 'index']);
+    Route::get('/{id}', [PlaceController::class, 'get']);
 });
 
 //Banners for everyone
