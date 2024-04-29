@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Attraction;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AttractionCreateRequest extends FormRequest
 {
@@ -24,7 +25,12 @@ class AttractionCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
+            'name' => [
+                'required', 'string', Rule::unique('attractions', 'name')
+            ],
+            'order_num' => [
+                'numeric', 'nullable', Rule::unique('attractions', 'order_num')
+            ],
             'category_id' => 'required|numeric',
             'summary' => 'required|string',
         ];
@@ -48,6 +54,7 @@ class AttractionCreateRequest extends FormRequest
             'name' => 'Naziv',
             'category_id' => 'Kategorija',
             'summary' => 'Sažetak',
+            'order_num' => 'Redni broj za naj noviji sadržaj'
         ];
     }
 }

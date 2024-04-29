@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Attraction;
+namespace App\Http\Requests\Place;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AttractionUpdateRequest extends FormRequest
+class PlaceUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize()
     {
@@ -26,13 +24,13 @@ class AttractionUpdateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('attractions', 'name')->ignore($this->id)
+                'required', 
+                'string', 
+                'max:128',
+                Rule::unique('places', 'name')
+                    ->ignore($this->id)
             ],
-            'order_num' => [
-                'numeric', 'nullable', 'sometimes', Rule::unique('attractions', 'order_num')->ignore($this->id)
-            ],
-            'category_id' => 'required|numeric',
-            'summary' => 'required|string',
+            'description' => 'nullable|string',
         ];
     }
 
@@ -45,10 +43,7 @@ class AttractionUpdateRequest extends FormRequest
     {
         return [
             'name' => 'Naziv',
-            'category_id' => 'Kategorija',
-            'summary' => 'Sažetak',
-            'order_num' => 'Redni broj za naj noviji sadržaj'
+            'description' => 'Opis',
         ];
     }
-
 }

@@ -29,6 +29,8 @@ class PlaceResource extends JsonResource
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'parent_id' => $this->parent_id,
 			'parent' => PlaceResource::make($this->whenLoaded('parent')),
+			'images' => FileResource::collection($this->whenLoaded('images')),
+			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("d.m.Y.") : null,

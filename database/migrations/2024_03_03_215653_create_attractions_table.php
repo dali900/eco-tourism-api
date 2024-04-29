@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id('id');
             $table->string('name', 128);
             $table->bigInteger('parent_id')->unsigned()->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('latitude', 32)->nullable();
             $table->string('longitude', 32)->nullable();
             $table->string('map_link', 256)->nullable();
-            $table->tinyInteger('order_num')->unsigned()->default(0);
+            $table->smallInteger('order_num')->unsigned()->default(0);
             $table->tinyInteger('visible')->unsigned()->default(1);
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
@@ -62,7 +62,8 @@ return new class extends Migration
             $table->string('map_link', 256)->nullable();
             $table->tinyInteger('approved')->unsigned()->default(1);
             $table->tinyInteger('visible')->unsigned()->default(1);
-            $table->tinyInteger('stand_out')->unsigned()->default(0);
+            $table->tinyInteger('suggested')->unsigned()->default(0);
+            $table->tinyInteger('order_num')->unsigned()->nullable();
             $table->string('note', 255)->nullable();
             $table->timestamps();
 

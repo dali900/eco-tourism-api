@@ -115,10 +115,10 @@ class AttractionCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getTree(Request $request, $app)
+    public function getTree(Request $request)
     {
         $attractionCategories = AttractionCategory::select('id as key', 'laravel_cte.*')
-        ->treeOf(function ($q) use ($app) {
+        ->treeOf(function ($q) {
             $q->whereNull('parent_id');
         })
         ->orderBy('id', 'asc');
@@ -198,6 +198,6 @@ class AttractionCategoryController extends Controller
         $attractionCategories = $this->attractionCategoryRepository->getAllFiltered($request->all());
         $attractionCategories->with('parent');
         $attractionCategoriesPaginated = $attractionCategories->paginate($perPage);
-        return $this->responseSuccess(AttractionCategoryResource::make($attractionCategoriesPaginated));
+        return $this->responseSuccess(AttractionCategoryResourcePaginated::make($attractionCategoriesPaginated));
     }
 }

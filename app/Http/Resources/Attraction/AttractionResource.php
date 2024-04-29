@@ -39,7 +39,8 @@ class AttractionResource extends JsonResource
 			'longitude' => $this->longitude,
 			'map_link' => $this->map_link,
 			'content' => $this->content,
-			'stand_out' => $this->stand_out,
+			'suggested' => $this->suggested == 1 ? true : false,
+			'order_num' => $this->order_num,
 			'note' => $this->note,
 			'images' => FileResource::collection($this->whenLoaded('images')),
 			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
@@ -47,8 +48,8 @@ class AttractionResource extends JsonResource
 			'pdf_file' => FileResource::make($this->whenLoaded('pdfFile')),
 			'html_file' => FileResource::make($this->whenLoaded('htmlFile')),
 			'html_file_content' => $this->whenLoaded('htmlFile') ? file_get_contents(storage_path().'/app/'.$this->htmlFile->file_path) : null, */
-			'visible' => $this->visible,
-			'approved' => $this->approved
+			'visible' => $this->visible == 1 ? true : false,
+			'approved' => $this->approved == 1 ? true : false,
 		];
     }
 

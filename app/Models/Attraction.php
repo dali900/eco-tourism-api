@@ -24,7 +24,8 @@ class Attraction extends Model
         'map_link',
         'approved',
         'visible',
-        'stand_out',
+        'suggested',
+        'order_num',
         'note',
     ];
 
@@ -75,5 +76,21 @@ class Attraction extends Model
     public function defaultImage()
     {
         return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
+    }
+
+    /**
+     * Filter only suggested
+     *
+     * @param $query
+     * @return void
+     */
+    public function scopeSuggested($query)
+    {
+        $query->where('suggested', '!=', 0);
+    }
+    
+    public function scopeNotSuggested($query)
+    {
+        $query->where('suggested', '=', 0);
     }
 }

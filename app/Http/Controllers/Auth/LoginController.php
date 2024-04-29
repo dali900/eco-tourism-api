@@ -32,7 +32,7 @@ class LoginController extends Controller
         ]);
 
         if (!Auth::guard('web')->attempt($attr, $request->remember)) {
-            return $this->responseUnauthenticated('Credentials not match', 401);
+            return $this->responseUnauthenticated('Credentials not match');
         }
 
         $user = auth()->user();

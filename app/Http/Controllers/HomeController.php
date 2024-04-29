@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Attraction\AttractionResource;
 use App\Models\ArticleType;
+use App\Models\Attraction;
 use App\Models\DocumentType;
 use App\Models\QuestionType;
 use App\Models\RegulationType;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class HomeController extends Controller
 {
@@ -44,6 +48,30 @@ class HomeController extends Controller
             'document_menu' => $documentTypes,
             'article_menu' => $articleTypes,
             'question_menu' => $questionTypes,
+        ]);
+    }
+
+    /**
+     * Fetch home page data
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getHomePageData(Request $request): JsonResponse
+    {
+        $attractions = Attraction::notSuggested()
+            ->orderByRaw('-order_num DESC')
+            ->orderByDesc('id')
+            ->limit(12)
+            ->with(['images', 'defaultImage'])
+            ->get();
+        $suggestedAttractions = Attraction::suggested()
+            ->orderByDesc('id')
+            ->limit(3)
+            ->get();
+
+        return $this->responseSuccess([
+            'attractions' => AttractionResource::collection($attractions),
+            'suggested_attractions' => AttractionResource::collection($suggestedAttractions),      
         ]);
     }
 }

@@ -13,7 +13,7 @@ class AttractionCategory extends Model
     protected $fillable = [
         'name',
         'subtitle',
-        'category_id',
+        'parent_id',
         'slug',
         'summary',
         'text',

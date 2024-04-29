@@ -50,9 +50,7 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/menu', [HomeController::class, 'getMenu']);
 
 Route::middleware('auth:sanctum')->get('/me', [UserController::class, 'getAuthUser']);
-Route::get('/fake-user', [UserController::class, 'getFakeUser']);
-Route::post('/contact', [UserController::class, 'contact']);
-Route::post('/contact/banner-1', [BannersController::class, 'banner1Contact']);
+Route::get('/home-page-data', [HomeController::class, 'getHomePageData']);
 
 //Login
 Route::post('/login', [LoginController::class, 'login']);
@@ -169,6 +167,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [AttractionController::class, 'update']);
         Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
+    });
+    //Attracation categories
+    Route::prefix('/attraction-categories')->middleware('role:author')->group(function () {
+        Route::post('/', [AttractionCategoryController::class, 'store']);
+        Route::put('/{id}', [AttractionCategoryController::class, 'update']);
+        Route::delete('/{id}', [AttractionCategoryController::class, 'destroy']);
+    });
+    //Places
+    Route::prefix('/places')->middleware('role:author')->group(function () {
+        Route::post('/', [PlaceController::class, 'store']);
+        Route::put('/{id}', [PlaceController::class, 'update']);
+        Route::delete('/{id}', [PlaceController::class, 'destroy']);
     });
     //Users
     Route::prefix('/users')->middleware('role:admin')->group(function () {
