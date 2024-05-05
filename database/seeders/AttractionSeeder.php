@@ -31,7 +31,7 @@ class AttractionSeeder extends Seeder
                 fn (Sequence $sequence) => ['category_id' => $attractionCattegories->random()->id],
             ))
             ->create([
-                'user_id' => $user->id,
+                'created_by' => $user->id,
                 'place_id' => $places->random()->id,
             ]);
     }

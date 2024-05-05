@@ -27,31 +27,31 @@ class PlaceSeeder extends Seeder
                 'name' => 'Despotovac',
                 'parent_id' => NULL,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Žagubica',
                 'parent_id' => NULL,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Petrovac na Mlavi',
                 'parent_id' => NULL,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Busur',
                 'parent_id' => NULL,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Svilajanc',
                 'parent_id' => NULL,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
         ]);
 
@@ -63,25 +63,25 @@ class PlaceSeeder extends Seeder
                 'name' => 'Zlatovo',
                 'parent_id' => $despotovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Grabovica',
                 'parent_id' => $despotovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Miliva',
                 'parent_id' => $despotovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Strmosten',
                 'parent_id' => $despotovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
         ]);
         
@@ -90,13 +90,13 @@ class PlaceSeeder extends Seeder
                 'name' => 'Busur',
                 'parent_id' => $petrovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Vezičevo',
                 'parent_id' => $petrovac->id,
                 'description' => implode(" ", fake()->sentences(5)),
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
         ]);
 

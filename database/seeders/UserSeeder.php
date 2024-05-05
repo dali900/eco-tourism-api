@@ -31,7 +31,18 @@ class UserSeeder extends Seeder
 				'role' => 'super_admin',
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
-			]
+			],
+			[
+				'name' => 'Api User',
+				'first_name' => 'Api',
+				'last_name' => 'User',
+				'email' => 'api@ekoturizam.rs',
+				'password' => Hash::make('Eko@turizam24'),
+				'role' => 'super_admin',
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			],
+
 		]);
     }
 }

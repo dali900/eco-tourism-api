@@ -21,13 +21,17 @@ return new class extends Migration
             $table->string('map_link', 256)->nullable();
             $table->smallInteger('order_num')->unsigned()->default(0);
             $table->tinyInteger('visible')->unsigned()->default(1);
-            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('created_by')->unsigned()->nullable();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
             
             $table->foreign('parent_id')->references('id')->on('places')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
         });
@@ -37,11 +41,15 @@ return new class extends Migration
             $table->unsignedInteger('parent_id')->nullable();
             $table->string('name', 256);
             $table->tinyInteger('order_num')->unsigned()->default(0);
-            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('created_by')->unsigned()->nullable();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
             
             $table->foreign('parent_id')->references('id')->on('attraction_categories')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
         });
@@ -55,7 +63,8 @@ return new class extends Migration
             $table->string('summary', 512)->nullable();
             $table->text('content')->nullable();
             $table->string('slug', 128)->nullable();
-            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('created_by')->unsigned()->nullable();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->bigInteger('place_id')->unsigned()->nullable();
             $table->string('latitude', 32)->nullable();
             $table->string('longitude', 32)->nullable();
@@ -67,7 +76,10 @@ return new class extends Migration
             $table->string('note', 255)->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
             $table->foreign('place_id')->references('id')->on('places')

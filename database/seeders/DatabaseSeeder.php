@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
 			PlaceSeeder::class,
 			AttractionCategorySeeder::class,
 			AttractionSeeder::class,
+			NewsCategorySeeder::class,
+			NewsSeeder::class,
 		]);
     }
 }

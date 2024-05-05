@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\NewsResource;
-use App\Contracts\NewsRepositoryInterface;
-use App\Http\Resources\NewsResourcePaginated;
+use App\Http\Requests\News\NewsCreateRequest;
+use App\Http\Requests\News\NewsUpdateRequest;
+use App\Http\Resources\News\NewsResource;
+use App\Http\Resources\News\NewsResourcePaginated;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\News;
+use App\Repositories\NewsRepository;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -20,7 +22,7 @@ class NewsController extends Controller
      */
     private $newsRepository;
 
-    public function __construct(NewsRepositoryInterface $newsRepository) {
+    public function __construct(NewsRepository $newsRepository) {
         $this->newsRepository = $newsRepository;
     }
 
@@ -32,12 +34,25 @@ class NewsController extends Controller
      */
     public function get($id)
     {
-        $news = News::with('image')->find($id);
+        $news = News::with(['images', 'categories'])->find($id);
         if(!$news){
             return $this->responseNotFound();
         }
+        $categoryIds = $news->categories->pluck('id')->all();
+        $newsCategories = [];
+        foreach ($news->categories as $category) {
+            $categories = $category->ancestorsAndSelf()->get()->toArray();
+            $newsCategories[] = $categories;
+        }
+        $selectedCategories = [];
+        foreach ($categoryIds as $cid) {
+            $selectedCategories[$cid] = true;
+        }
+
         return $this->responseSuccess([
-            'news' => NewsResource::make($news)
+            'news' => NewsResource::make($news),
+            'selected_categories' => $selectedCategories,
+            'news_categories' => $newsCategories
         ]);
     }
     
@@ -47,16 +62,14 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         $perPage = $request->perPage ?? 20;
         $news = $this->newsRepository->getAllFiltered($request->all());
-        $news->with('image');
+        $news->with(['images']);
         $newsPaginated = $news->paginate($perPage);
         $newsResource = NewsResourcePaginated::make($newsPaginated);
-        return $this->responseSuccess([
-            'news' => $newsResource
-        ]);
+        return $this->responseSuccess($newsResource);
     }
 
     /**
@@ -65,31 +78,26 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create(NewsCreateRequest $request)
     {
-        $attr = $request->validate([
-			'title' => 'required|string',
-            'summary' => 'required|string',
-            'subtitle' => 'required|string',
-            'text' => 'required|string'
-		]);
-
         $user = auth()->user();
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['created_by'] = $user->id;
+        $data['slug'] = Str::slug(substr($data['title'], 0, 128));
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
 
         $news = News::create($data);
+        if (!empty($data['category_ids'])) {
+            $news->categories()->attach($data['category_ids']);
+        }
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
             $news->saveFiles($data['tmp_files'], 'news/');
         }
-        $news->load('image');
+        $news->load(['images', 'defaultImage', 'categories']);
 
-        return $this->responseSuccess([
-            'news' => NewsResource::make($news)
-        ]);
+        return $this->responseSuccess(NewsResource::make($news));
     }
 
     /**
@@ -99,13 +107,8 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NewsUpdateRequest $request, $id)
     {
-        $attr = $request->validate([
-			'title' => 'required|string',
-			'summary' => 'required|string'
-		]);
-
         $user = auth()->user();
 
         $news = News::find($id);
@@ -114,19 +117,21 @@ class NewsController extends Controller
         }
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['updated_by'] = $user->id;
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
+        $data['slug'] = Str::slug(substr($data['title'], 0, 128));
 
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
             $news->saveFiles($data['tmp_files'], 'news/');
-        }
-        
+        }      
         $news->update($data);
-        $news->load('image');
-        return $this->responseSuccess([
-            'news' => NewsResource::make($news)
-        ]);
+        if (!empty($data['category_ids'])) {
+            $news->categories()->sync($data['category_ids']);
+        }
+        $news->load(['images', 'defaultImage', 'categories']);
+
+        return $this->responseSuccess(NewsResource::make($news));
     }
 
     /**

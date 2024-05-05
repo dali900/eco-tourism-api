@@ -15,7 +15,8 @@ class Place extends Model
         'name',
         'parent_id',
         'description',
-        'user_id',
+        'created_by',
+        'updated_by',
         'latitude',
         'longitude',
         'map_link',
@@ -38,9 +39,19 @@ class Place extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function createdBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
+    /**
+     * User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updatedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**

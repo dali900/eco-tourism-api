@@ -13,12 +13,13 @@ class News extends Model
     protected $fillable = [
         'title',
         'subtitle',
-        'user_id',
+        'created_by',
+        'updated_by',
         'text',
         'summary',
         'publish_date',
         'file_path',
-        'app'
+        'slug'
     ];
 
     /**
@@ -26,9 +27,19 @@ class News extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function createdBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
+    /**
+     * User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updatedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**
@@ -36,8 +47,28 @@ class News extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function image()
+    public function images()
     {
-        return $this->morphOne(File::class, 'file_model');
+        return $this->morphMany(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
+    }
+
+    /**
+     * Default Image Files
+     *
+     * 
+     */
+    public function defaultImage()
+    {
+        return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
+    }
+
+    /**
+     * Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(NewsCategory::class, 'news_news_category', 'news_id', 'news_category_id');
     }
 }

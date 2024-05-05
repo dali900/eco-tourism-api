@@ -27,67 +27,67 @@ class AttractionCategorySeeder extends Seeder
                 'name' => 'Prirodne odlike',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Vrhovi',
                 'parent_id' => 1,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Brda',
                 'parent_id' => 1,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Kulturni spomenici',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Smeštajni kapaciteti',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Ugostiteljski objekti',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Lokalni prehrambeni proizvodi i pića',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Rukotvorine',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Kulturne, sportske i druge manifestacije',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Udruženje građanja i sportske organizacije',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
             [
                 'name' => 'Ostalo',
                 'parent_id' => NULL,
                 'order_num' => 0,
-                'user_id' => $user->id
+                'created_by' => $user->id
             ],
         ]);
     }

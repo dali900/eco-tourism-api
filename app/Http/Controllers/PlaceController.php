@@ -61,7 +61,7 @@ class PlaceController extends Controller
         $user = auth()->user();
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['created_by'] = $user->id;
         $place = Place::create($data);
         
         //Save uploaded temp files
@@ -91,7 +91,7 @@ class PlaceController extends Controller
         
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['updated_by'] = $user->id;
         //Upload files
         if(!empty($data['tmp_files'])){
             $place->saveFiles($data['tmp_files'], 'places/');

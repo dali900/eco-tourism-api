@@ -15,12 +15,17 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('parent_id')->nullable();
             $table->string('name', 256);
+            $table->tinyInteger('order_num')->unsigned()->default(0);
             $table->tinyInteger('visible')->default(1);
-            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('created_by')->unsigned()->nullable();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
             
             $table->foreign('parent_id')->references('id')->on('news_categories')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
         });
@@ -29,21 +34,31 @@ return new class extends Migration
             $table->id('id');
             $table->string('title', 256);
             $table->string('subtitle', 256);
-            $table->integer('category_id')->unsigned()->nullable();
             $table->string('slug', 128)->nullable();
             $table->text('summary');
             $table->text('text');
-            $table->dateTime('publish_date');
+            $table->dateTime('publish_date')->nullable();
             $table->tinyInteger('approved')->default(1);
-            $table->bigInteger('user_id')->unsigned()->nullable();
+            $table->bigInteger('created_by')->unsigned()->nullable();
+            $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->foreign('created_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
-            $table->foreign('category_id')->references('id')->on('news_categories')
+            $table->foreign('updated_by')->references('id')->on('users')
                 ->onDelete('set null')
                 ->onUpdate('cascade');
+        });
+        
+        Schema::create('news_news_category', function (Blueprint $table) {
+            $table->id('id');
+            $table->bigInteger('news_id')->unsigned()->nullable();
+            $table->unsignedInteger('news_category_id')->nullable();
+            $table->timestamps();
+
+            $table->foreign('news_id')->references('id')->on('news')->onDelete('cascade');
+            $table->foreign('news_category_id')->references('id')->on('news_categories')->onDelete('cascade');
         });
     }
 

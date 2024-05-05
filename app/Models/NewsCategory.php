@@ -13,7 +13,9 @@ class NewsCategory extends Model
     protected $fillable = [
         'parent_id',
         'name',
-        'user_id',
+        'order_num',
+        'created_by',
+        'updated_by',
         'visible',
     ];
 
@@ -24,7 +26,7 @@ class NewsCategory extends Model
      */
     public function news()
     {
-        return $this->hasMany(News::class);
+        return $this->belongsToMany(News::class);
     }
 
     /**
@@ -32,8 +34,18 @@ class NewsCategory extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function createdBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+    
+    /**
+     * User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updatedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

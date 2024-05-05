@@ -142,7 +142,7 @@ class AttractionCategoryController extends Controller
         $user = auth()->user();
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['created_by'] = $user->id;
 
         $attractionCategory = AttractionCategory::create($data);
         $attractionCategory->load('parent');
@@ -167,7 +167,7 @@ class AttractionCategoryController extends Controller
         }
 
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        $data['updated_by'] = $user->id;
         //prevent seting parent as parent
         if (!empty($data['parent_id'])) {
             //set parents child as its parent (set child as parent of its parent)

@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
@@ -31,11 +32,15 @@ class LoginController extends Controller
             'browser' => $request->header('User-Agent')
         ]);
 
-        if (!Auth::guard('web')->attempt($attr, $request->remember)) {
-            return $this->responseUnauthenticated('Credentials not match');
+        $user = User::where('email',$attr['email'])->first();
+        if(!$user || !Hash::check($attr['password'],$user->password)){
+            return $this->responseUnauthenticated('Invalid Credentials');
         }
 
-        $user = auth()->user();
+        /* if (!Auth::guard('web')->attempt($attr, $request->remember)) {
+            return $this->responseUnauthenticated('Credentials not match');
+        } */
+
         if ($user) {
             $user->ip = $this->getIp();
             $user->last_login = Carbon::now();
@@ -65,11 +70,12 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         //API token logout
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
+        //$request->user()->currentAccessToken()->delete();
         //SPA logout
         //auth()->logout();
         header('Clear-Site-Data: "cache", "executionContexts"');
         
-        return $this->responseSuccess();
+        return $this->responseSuccess(['message' => 'logout success']);
     }
 }

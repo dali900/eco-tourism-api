@@ -21,6 +21,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RegulationTypeController;
 use App\Http\Controllers\Plan\FreeTrialController;
@@ -62,22 +63,17 @@ Route::prefix('/users')->group(function () {
 
 //News for everyone
 Route::prefix('/news')->group(function () {
-    Route::get('/', [NewsController::class, 'getAll']);
+    Route::get('/', [NewsController::class, 'index']);
     Route::get('/{id}', [NewsController::class, 'get']);
 });
 
-//Documents for everyone
-Route::prefix('/documents')->group(function () {
-    Route::get('/', [DocumentController::class, 'getAll']);
-    Route::get('/{id}', [DocumentController::class, 'get']);
-    Route::post('/download-file/{id}', [DocumentController::class, 'downloadFile']);
-});
-
-//Document types
-Route::prefix('/document-types')->group(function () {
-    Route::get('/', [DocumentTypeController::class, 'getAll']);
-    Route::get('/roots', [DocumentTypeController::class, 'getRoots']);
-    Route::get('/{id}', [DocumentTypeController::class, 'get']);
+//News categories
+Route::prefix('/news-categories')->group(function () {
+    Route::get('/', [NewsCategoryController::class, 'index']);
+    Route::get('/category/{id}', [NewsCategoryController::class, 'getCategoryNews']);
+    Route::get('/roots', [NewsCategoryController::class, 'getRoots']);
+    Route::get('/tree', [NewsCategoryController::class, 'getTree']);
+    Route::get('/{id}', [NewsCategoryController::class, 'get']);
 });
 
 //Articles for everyone
@@ -91,25 +87,6 @@ Route::prefix('/article-types')->group(function () {
     Route::get('/', [ArticleTypeController::class, 'getAll']);
     Route::get('/roots', [ArticleTypeController::class, 'getRoots']);
     Route::get('/{id}', [ArticleTypeController::class, 'get']);
-});
-
-//Questions for everyone
-Route::prefix('/questions')->group(function () {
-    Route::get('/', [QuestionController::class, 'getAll']);
-    Route::get('/{id}', [QuestionController::class, 'get']);
-});
-
-//Question types for everyone
-Route::prefix('/question-types')->group(function () {
-    Route::get('/', [QuestionTypeController::class, 'getAll']);
-    Route::get('/roots', [QuestionTypeController::class, 'getRoots']);
-    Route::get('/{id}', [QuestionTypeController::class, 'get']);
-});
-
-//Videos for everyone
-Route::prefix('/videos')->group(function () {
-    Route::get('/', [VideoController::class, 'getAll']);
-    Route::get('/{id}', [VideoController::class, 'get']);
 });
 
 //Attracations
@@ -174,6 +151,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [AttractionCategoryController::class, 'update']);
         Route::delete('/{id}', [AttractionCategoryController::class, 'destroy']);
     });
+    //News categories
+    Route::prefix('/news-categories')->middleware('role:author')->group(function () {
+        Route::post('/', [NewsCategoryController::class, 'store']);
+        Route::put('/{id}', [NewsCategoryController::class, 'update']);
+        Route::delete('/{id}', [NewsCategoryController::class, 'destroy']);
+    });
     //Places
     Route::prefix('/places')->middleware('role:author')->group(function () {
         Route::post('/', [PlaceController::class, 'store']);
@@ -193,32 +176,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}/password', [UserController::class, 'updatePassword']);
         Route::delete('/{id}', [UserController::class, 'delete']);
     });
-    //Regulation types
-    Route::prefix('/regulation-types')->group(function () {
-        Route::post('/', [RegulationTypeController::class, 'create'])->middleware('role:author');
-        Route::put('/{id}', [RegulationTypeController::class, 'update'])->middleware('role:author');
-        Route::delete('/{id}', [RegulationTypeController::class, 'delete'])->middleware('role:author');
-    });
     //News
     Route::prefix('/news')->middleware('role:author')->group(function () {
         Route::post('/', [NewsController::class, 'create']);
         Route::put('/{id}', [NewsController::class, 'update']);
         Route::delete('/{id}', [NewsController::class, 'delete']);
         Route::delete('/file/{id}', [NewsController::class, 'deleteFile']);
-    });
-    //Document
-    Route::prefix('/documents')->middleware('role:author')->group(function () {
-        Route::post('/', [DocumentController::class, 'create']);
-        Route::put('/{id}', [DocumentController::class, 'update']);
-        Route::delete('/{id}', [DocumentController::class, 'delete']);
-        Route::delete('/file/{id}', [DocumentController::class, 'deleteFile']);
-        Route::delete('/preview-file/{id}', [DocumentController::class, 'deletePreviewFile']);
-    });
-    //Document types
-    Route::prefix('/document-types')->middleware('role:author')->group(function () {
-        Route::post('/', [DocumentTypeController::class, 'create']);
-        Route::put('/{id}', [DocumentTypeController::class, 'update']);
-        Route::delete('/{id}', [DocumentTypeController::class, 'delete']);
     });
     //Article
     Route::prefix('/articles')->middleware('role:author')->group(function () {
@@ -233,26 +196,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [ArticleTypeController::class, 'create']);
         Route::put('/{id}', [ArticleTypeController::class, 'update']);
         Route::delete('/{id}', [ArticleTypeController::class, 'delete']);
-    });
-    //Question
-    Route::prefix('/questions')->middleware('role:author')->group(function () {
-        Route::post('/', [QuestionController::class, 'create']);
-        Route::put('/{id}', [QuestionController::class, 'update']);
-        Route::delete('/{id}', [QuestionController::class, 'delete']);
-        Route::delete('/file/{id}', [QuestionController::class, 'deleteFile']);
-    });
-    //Question types
-    Route::prefix('/question-types')->middleware('role:author')->group(function () {
-        Route::post('/', [QuestionTypeController::class, 'create']);
-        Route::put('/{id}', [QuestionTypeController::class, 'update']);
-        Route::delete('/{id}', [QuestionTypeController::class, 'delete']);
-    });
-    //Videos
-    Route::prefix('/videos')->middleware('role:author')->group(function () {
-        Route::post('/', [VideoController::class, 'create']);
-        Route::put('/{id}', [VideoController::class, 'update']);
-        Route::delete('/{id}', [VideoController::class, 'delete']);
-        Route::post('/download-file/{id}', [VideoController::class, 'downloadVideoFile']);
     });
     //Banners
     Route::prefix('/banners')->middleware('role:author')->group(function () {
