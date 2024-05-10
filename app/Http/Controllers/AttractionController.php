@@ -47,7 +47,8 @@ class AttractionController extends Controller
         //$rt = \App\Models\RegulationType::treeOf(function($q){$q->where('id',83);})->get()->toTree();
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
-            'images'
+            'images',
+            'place'
         ])->find($id);
         if(!$attraction){
             return $this->responseNotFound();

@@ -28,11 +28,13 @@ class AttractionSeeder extends Seeder
         $places = Place::get();
         Attraction::factory()->count(30)
             ->state(new Sequence(
-                fn (Sequence $sequence) => ['category_id' => $attractionCattegories->random()->id],
+                fn (Sequence $sequence) => [
+                    'category_id' => $attractionCattegories->random()->id,
+                    'place_id' => $places->random()->id,
+                ],
             ))
             ->create([
-                'created_by' => $user->id,
-                'place_id' => $places->random()->id,
+                'created_by' => $user->id
             ]);
     }
 }

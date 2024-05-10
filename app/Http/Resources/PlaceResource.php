@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\UserResource;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,6 +31,7 @@ class PlaceResource extends JsonResource
 			'parent_id' => $this->parent_id,
 			'parent' => PlaceResource::make($this->whenLoaded('parent')),
 			'images' => FileResource::collection($this->whenLoaded('images')),
+			'attractions' => AttractionResource::collection($this->whenLoaded('attractions')),
 			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,

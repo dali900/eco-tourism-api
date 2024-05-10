@@ -61,7 +61,7 @@ class HomeController extends Controller
         $attractions = Attraction::notSuggested()
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
-            ->limit(12)
+            ->limit(6)
             ->with(['images', 'defaultImage'])
             ->get();
         $suggestedAttractions = Attraction::suggested()

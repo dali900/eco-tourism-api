@@ -44,8 +44,10 @@ class PlaceController extends Controller
     public function get(string $id)
     {
         $place = Place::with([
-            'images'
-        ])->find($id);
+            'images',
+            'attractions'
+        ])
+        ->find($id);
         if(!$place){
             return $this->responseNotFound();
         }

@@ -51,6 +51,9 @@ class AttractionCategoryResource extends JsonResource
             'children' => $this->when($this->relationLoaded('allChildren'), function () {
                 return AttractionCategoryResource::collection($this->allChildren);
             }),
+            'attractions' => $this->when($this->relationLoaded('attractions'), function () {
+                return AttractionResource::collection($this->attractions);
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("F d, Y") : null,

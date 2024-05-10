@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Attraction\AttractionCategoryResource;
 use App\Http\Resources\Attraction\AttractionCategoryResourcePaginated;
+use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\Attraction\AttractionResourcePaginated;
 use App\Models\AttractionCategory;
 use App\Repositories\AttractionCategoryRepository;
@@ -105,7 +106,7 @@ class AttractionCategoryController extends Controller
                 'attractions' => fn($q) => $q->limit(3)
             ]);
         });
-        return $this->responseSuccess($categories);
+        return $this->responseSuccess(AttractionCategoryResource::collection($categories));
     
     }
 
