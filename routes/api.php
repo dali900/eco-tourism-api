@@ -29,6 +29,7 @@ use App\Http\Controllers\Plan\SubscriptionController;
 use App\Http\Controllers\Plan\FreeTrialPlanController;
 use App\Http\Controllers\Plan\SubscriptionPlanController;
 use App\Http\Controllers\ReportErrorController;
+use App\Http\Controllers\TripController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,10 +62,16 @@ Route::prefix('/users')->group(function () {
     Route::post('/', [UserController::class, 'create']);
 });
 
-//News for everyone
+//News
 Route::prefix('/news')->group(function () {
     Route::get('/', [NewsController::class, 'index']);
     Route::get('/{id}', [NewsController::class, 'get']);
+});
+
+//Trips
+Route::prefix('/trips')->group(function () {
+    Route::get('/', [TripController::class, 'index']);
+    Route::get('/{id}', [TripController::class, 'get']);
 });
 
 //News categories
@@ -151,12 +158,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [AttractionCategoryController::class, 'update']);
         Route::delete('/{id}', [AttractionCategoryController::class, 'destroy']);
     });
-    //News categories
-    Route::prefix('/news-categories')->middleware('role:author')->group(function () {
-        Route::post('/', [NewsCategoryController::class, 'store']);
-        Route::put('/{id}', [NewsCategoryController::class, 'update']);
-        Route::delete('/{id}', [NewsCategoryController::class, 'destroy']);
-    });
     //Places
     Route::prefix('/places')->middleware('role:author')->group(function () {
         Route::post('/', [PlaceController::class, 'store']);
@@ -178,10 +179,22 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     //News
     Route::prefix('/news')->middleware('role:author')->group(function () {
-        Route::post('/', [NewsController::class, 'create']);
+        Route::post('/', [NewsController::class, 'store']);
         Route::put('/{id}', [NewsController::class, 'update']);
         Route::delete('/{id}', [NewsController::class, 'delete']);
         Route::delete('/file/{id}', [NewsController::class, 'deleteFile']);
+    });
+    //News categories
+    Route::prefix('/news-categories')->middleware('role:author')->group(function () {
+        Route::post('/', [NewsCategoryController::class, 'store']);
+        Route::put('/{id}', [NewsCategoryController::class, 'update']);
+        Route::delete('/{id}', [NewsCategoryController::class, 'destroy']);
+    });
+    //Trips
+    Route::prefix('/trips')->middleware('role:author')->group(function () {
+        Route::post('/', [TripController::class, 'store']);
+        Route::put('/{id}', [TripController::class, 'update']);
+        Route::delete('/{id}', [TripController::class, 'delete']);
     });
     //Article
     Route::prefix('/articles')->middleware('role:author')->group(function () {

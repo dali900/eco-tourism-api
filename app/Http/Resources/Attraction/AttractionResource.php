@@ -44,9 +44,9 @@ class AttractionResource extends JsonResource
 			'note' => $this->note,
 			'images' => FileResource::collection($this->whenLoaded('images')),
 			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
-			'thumbnail_image' => [
+			/* 'thumbnail_image' => [
 				'file_url' => $this->getDefaultThumbnailImage()
-			],
+			], */
 			/* 'download_file' => FileResource::make($this->whenLoaded('downloadFile')),
 			'pdf_file' => FileResource::make($this->whenLoaded('pdfFile')),
 			'html_file' => FileResource::make($this->whenLoaded('htmlFile')),

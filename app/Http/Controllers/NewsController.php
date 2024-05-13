@@ -78,7 +78,7 @@ class NewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create(NewsCreateRequest $request)
+    public function store(NewsCreateRequest $request)
     {
         $user = auth()->user();
 

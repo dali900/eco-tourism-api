@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Attraction\AttractionResource;
-use App\Models\ArticleType;
+use App\Http\Resources\News\NewsResource;
 use App\Models\Attraction;
-use App\Models\DocumentType;
-use App\Models\QuestionType;
-use App\Models\RegulationType;
+use App\Models\News;
+use App\Models\NewsCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -24,30 +24,15 @@ class HomeController extends Controller
         return $this->responseSuccess();
     }
 
-    public function getMenu($app)
+    public function getMenu()
     {
         //TODO: cache
-        /*
-            \App\Models\RegulationType::treeOf(function($q){$q->where('app','zzs');})->get()->toTree()
-        */
-        $regulationTypes = RegulationType::treeOf(function ($q) use ($app) {
-            $q->where('app', $app)->whereNull('parent_id');
-        })->get()->toTree();
-        $documentTypes = DocumentType::treeOf(function ($q) use ($app) {
-            $q->where('app', $app)->whereNull('parent_id');
-        })->get()->toTree();
-        $articleTypes = ArticleType::treeOf(function ($q) use ($app) {
-            $q->where('app', $app)->whereNull('parent_id');
-        })->get()->toTree();
-        $questionTypes = QuestionType::treeOf(function ($q) use ($app) {
-            $q->where('app', $app)->whereNull('parent_id');
+        $newsCategories = NewsCategory::treeOf(function ($q) {
+            $q->whereNull('parent_id');
         })->get()->toTree();
 
         return $this->responseSuccess([
-            'regulation_menu' => $regulationTypes,
-            'document_menu' => $documentTypes,
-            'article_menu' => $articleTypes,
-            'question_menu' => $questionTypes,
+            'news_menu' => $newsCategories
         ]);
     }
 
@@ -61,17 +46,35 @@ class HomeController extends Controller
         $attractions = Attraction::notSuggested()
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
-            ->limit(6)
+            ->limit(3)
             ->with(['images', 'defaultImage'])
             ->get();
         $suggestedAttractions = Attraction::suggested()
             ->orderByDesc('id')
             ->limit(3)
             ->get();
+        $news = News::orderByDesc('id')
+            ->limit(3)
+            ->with(['images', 'defaultImage'])
+            ->get();
+
+        $counts = DB::select("
+            SELECT 'attractions' AS `table`, COUNT(*) AS `count` FROM attractions
+            UNION ALL
+            SELECT 'news' AS `table`, COUNT(*) AS `count` FROM news
+            UNION ALL
+            SELECT 'places' AS `table`, COUNT(*) AS `count` FROM places
+        ");
 
         return $this->responseSuccess([
             'attractions' => AttractionResource::collection($attractions),
-            'suggested_attractions' => AttractionResource::collection($suggestedAttractions),      
+            'suggested_attractions' => AttractionResource::collection($suggestedAttractions),
+            'news' => NewsResource::collection($news),
+            'counts' => [
+                'attractions' => $counts[0]->count,
+                'news' => $counts[1]->count,
+                'places' => $counts[2]->count,
+            ]
         ]);
     }
 }
