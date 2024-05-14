@@ -80,7 +80,7 @@ class TripRepository extends ModelRepository
             $model = $model->orderBy($sortField, $direction);
         }
 
-        $model->orderBy("news.title", "asc");
+        $model->orderBy("trips.title", "asc");
 
         return $model;
 	}

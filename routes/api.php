@@ -194,7 +194,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/trips')->middleware('role:author')->group(function () {
         Route::post('/', [TripController::class, 'store']);
         Route::put('/{id}', [TripController::class, 'update']);
-        Route::delete('/{id}', [TripController::class, 'delete']);
+        Route::delete('/{id}', [TripController::class, 'destroy']);
     });
     //Article
     Route::prefix('/articles')->middleware('role:author')->group(function () {
