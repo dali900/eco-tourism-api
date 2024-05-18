@@ -33,9 +33,9 @@ return new class extends Migration
         Schema::create('news', function (Blueprint $table) {
             $table->id('id');
             $table->string('title', 256);
-            $table->string('subtitle', 256);
+            $table->string('subtitle', 256)->nullable();
             $table->string('slug', 128)->nullable();
-            $table->text('summary');
+            $table->text('summary')->nullable();
             $table->text('text');
             $table->dateTime('publish_date')->nullable();
             $table->tinyInteger('approved')->default(1);

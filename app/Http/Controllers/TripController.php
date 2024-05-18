@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Repositories\TripRepository;
 use App\Http\Resources\Trip\TripResource;
+use App\Http\Requests\Trip\TripCreateRequest;
+use App\Http\Requests\Trip\TripUpdateRequest;
 use App\Http\Resources\Trip\TripResourcePaginated;
 use Carbon\Carbon;
 
@@ -55,7 +57,7 @@ class TripController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TripCreateRequest $request)
     {
         $user = auth()->user();
 
@@ -80,7 +82,7 @@ class TripController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TripUpdateRequest $request, string $id)
     {
         $user = auth()->user();
 
@@ -96,7 +98,7 @@ class TripController extends Controller
 
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
-            $trip->saveFiles($data['tmp_files'], 'news/');
+            $trip->saveFiles($data['tmp_files'], 'trip/');
         }      
         $trip->update($data);
         if (!empty($data['attraction_ids'])) {

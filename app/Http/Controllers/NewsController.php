@@ -152,25 +152,4 @@ class NewsController extends Controller
         return $this->responseSuccess();
     }
 
-    /**
-     * Delete news file 
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function deleteFile($id)
-    {
-        $news = News::find($id);
-        if(!$news){
-            return $this->responseNotFound();
-        }
-
-        $newsPath = $news->file_path;
-        if(Storage::exists($newsPath)){
-            Storage::delete($newsPath);
-            $news->update(['file_path' => NULL]);
-            return $this->responseSuccess();
-        }
-        return $this->responseSuccessMsg('File does not exist');
-    }
 }
