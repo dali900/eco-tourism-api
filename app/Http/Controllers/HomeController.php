@@ -47,7 +47,7 @@ class HomeController extends Controller
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
             ->limit(3)
-            ->with(['images', 'defaultImage'])
+            ->with(['images', 'thumbnail'])
             ->get();
         $suggestedAttractions = Attraction::suggested()
             ->orderByDesc('id')
@@ -55,7 +55,7 @@ class HomeController extends Controller
             ->get();
         $news = News::orderByDesc('id')
             ->limit(3)
-            ->with(['images', 'defaultImage'])
+            ->with(['images', 'thumbnail'])
             ->get();
 
         $counts = DB::select("

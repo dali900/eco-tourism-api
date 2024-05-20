@@ -34,7 +34,7 @@ class NewsController extends Controller
      */
     public function get($id)
     {
-        $news = News::with(['images', 'categories'])->find($id);
+        $news = News::with(['images', 'categories', 'thumbnail'])->find($id);
         if(!$news){
             return $this->responseNotFound();
         }
@@ -66,7 +66,7 @@ class NewsController extends Controller
     {
         $perPage = $request->perPage ?? 20;
         $news = $this->newsRepository->getAllFiltered($request->all());
-        $news->with(['images']);
+        $news->with(['images', 'thumbnail']);
         $newsPaginated = $news->paginate($perPage);
         $newsResource = NewsResourcePaginated::make($newsPaginated);
         return $this->responseSuccess($newsResource);
@@ -95,7 +95,10 @@ class NewsController extends Controller
         if(!empty($data['tmp_files'])){
             $news->saveFiles($data['tmp_files'], 'news/');
         }
-        $news->load(['images', 'defaultImage', 'categories']);
+        if ($news->images && $news->images[0]) {
+            $news->images[0]->makeThumbnail();
+        }
+        $news->load(['images', 'thumbnail', 'categories']);
 
         return $this->responseSuccess(NewsResource::make($news));
     }
@@ -129,7 +132,7 @@ class NewsController extends Controller
         if (!empty($data['category_ids'])) {
             $news->categories()->sync($data['category_ids']);
         }
-        $news->load(['images', 'defaultImage', 'categories']);
+        $news->load(['images', 'thumbnail', 'categories']);
 
         return $this->responseSuccess(NewsResource::make($news));
     }

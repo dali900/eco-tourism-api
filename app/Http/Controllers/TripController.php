@@ -32,7 +32,7 @@ class TripController extends Controller
     {
         $perPage = $request->perPage ?? 20;
         $trips = $this->tripRepository->getAllFiltered($request->all());
-        $trips->with(['images']);
+        $trips->with(['thumbnail']);
         $newsPaginated = $trips->paginate($perPage);
         $tripResource = TripResourcePaginated::make($newsPaginated);
         return $this->responseSuccess($tripResource);
@@ -46,7 +46,7 @@ class TripController extends Controller
      */
     public function get($id)
     {
-        $trip = Trip::with(['images', 'attractions'])->find($id);
+        $trip = Trip::with(['images', 'thumbnail', 'attractions.thumbnail'])->find($id);
         if(!$trip){
             return $this->responseNotFound();
         }
@@ -74,7 +74,10 @@ class TripController extends Controller
         if(!empty($data['tmp_files'])){
             $trip->saveFiles($data['tmp_files'], 'trip/');
         }
-        $trip->load(['images', 'defaultImage', 'attractions']);
+        if ($trip->images && $trip->images[0]) {
+            $trip->images[0]->makeThumbnail();
+        }
+        $trip->load(['images', 'thumbnail', 'attractions']);
 
         return $this->responseSuccess(TripResource::make($trip));
     }
@@ -108,7 +111,7 @@ class TripController extends Controller
             }
             $trip->attractions()->sync($pivotData);
         }
-        $trip->load(['images', 'defaultImage', 'attractions']);
+        $trip->load(['images', 'thumbnail', 'attractions']);
 
         return $this->responseSuccess(TripResource::make($trip));
     }

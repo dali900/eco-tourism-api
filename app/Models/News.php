@@ -63,6 +63,16 @@ class News extends Model
     }
 
     /**
+     * thumbnail
+     *
+     * 
+     */
+    public function thumbnail()
+    {
+        return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_THUMBNAIL);
+    }
+
+    /**
      * Category
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

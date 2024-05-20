@@ -31,7 +31,7 @@ class PlaceController extends Controller
         $perPage = $request->perPage ?? 20;
         $places = $this->placeRepository->getAllFiltered($request->all());
 
-        $places->with(['defaultImage']);
+        $places->with(['thumbnail']);
         $placesPaginated = $places->paginate($perPage);
         
         $placeResource = PlaceResourcePaginated::make($placesPaginated);
@@ -45,7 +45,8 @@ class PlaceController extends Controller
     {
         $place = Place::with([
             'images',
-            'attractions'
+            'attractions', 
+            'thumbnail'
         ])
         ->find($id);
         if(!$place){
@@ -70,7 +71,10 @@ class PlaceController extends Controller
         if(!empty($data['tmp_files'])){
             $place->saveFiles($data['tmp_files'], 'places/');
         }
-        $place->load(['images']);
+        if ($place->images && $place->images[0]) {
+            $place->images[0]->makeThumbnail();
+        }
+        $place->load(['images', 'thumbnail']);
 
         return $this->responseSuccess(PlaceResource::make($place));
     }
@@ -99,7 +103,7 @@ class PlaceController extends Controller
             $place->saveFiles($data['tmp_files'], 'places/');
         }
         $place->update($data);
-        $place->load(['images']);
+        $place->load(['images', 'thumbnail']);
         
         return $this->responseSuccess(PlaceResource::make($place));
     }

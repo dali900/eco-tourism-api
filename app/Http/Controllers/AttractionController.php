@@ -32,7 +32,7 @@ class AttractionController extends Controller
         $perPage = $request->perPage ?? 20;
         $attractions = $this->attractionRepository->getAllFiltered($request->all());
 
-        $attractions->with(['category', 'defaultImage']);
+        $attractions->with(['category', 'thumbnail']);
         $attractionsPaginated = $attractions->paginate($perPage);
         
         $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
@@ -48,12 +48,13 @@ class AttractionController extends Controller
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
             'images',
+            'thumbnail',
             'place'
         ])->find($id);
         if(!$attraction){
             return $this->responseNotFound();
         }
-        
+
         return $this->responseSuccess(AttractionResource::make($attraction));
     }
 
@@ -72,8 +73,11 @@ class AttractionController extends Controller
         if(!empty($data['tmp_files'])){
             $attraction->saveFiles($data['tmp_files'], 'attractions/');
         }
-        $attraction->load(['images']);
-
+        $attraction->load(['images', 'thumbnail']);
+        if ($attraction->images && $attraction->images[0]) {
+            $attraction->images[0]->makeThumbnail();
+        }
+        $attraction->load(['thumbnail']);
         return $this->responseSuccess(AttractionResource::make($attraction));
     }
 
@@ -101,7 +105,7 @@ class AttractionController extends Controller
             $attraction->saveFiles($data['tmp_files'], 'attractions/');
         }
         $attraction->update($data);
-        $attraction->load(['images']);
+        $attraction->load(['images', 'thumbnail']);
         
         return $this->responseSuccess(AttractionResource::make($attraction));
     }

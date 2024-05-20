@@ -73,4 +73,12 @@ class Place extends Model
     {
         return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_FILE);
     }
+
+    /**
+     * thumbnail
+     */
+    public function thumbnail()
+    {
+        return $this->morphOne(File::class, 'file_model')->where('file_tag', File::TAG_IMAGE_THUMBNAIL);
+    }
 }

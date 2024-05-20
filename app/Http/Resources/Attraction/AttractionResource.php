@@ -44,9 +44,7 @@ class AttractionResource extends JsonResource
 			'note' => $this->note,
 			'images' => FileResource::collection($this->whenLoaded('images')),
 			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
-			/* 'thumbnail_image' => [
-				'file_url' => $this->getDefaultThumbnailImage()
-			], */
+			'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
 			/* 'download_file' => FileResource::make($this->whenLoaded('downloadFile')),
 			'pdf_file' => FileResource::make($this->whenLoaded('pdfFile')),
 			'html_file' => FileResource::make($this->whenLoaded('htmlFile')),
@@ -55,10 +53,5 @@ class AttractionResource extends JsonResource
 			'approved' => $this->approved == 1 ? true : false,
 		];
     }
-
-	public function getDefaultThumbnailImage()
-	{
-		return '/storage/defaults/'.rand(1, 32).'.jpg';
-	}
 
 }

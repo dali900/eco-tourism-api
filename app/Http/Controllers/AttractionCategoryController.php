@@ -6,7 +6,9 @@ use App\Http\Resources\Attraction\AttractionCategoryResource;
 use App\Http\Resources\Attraction\AttractionCategoryResourcePaginated;
 use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\Attraction\AttractionResourcePaginated;
+use App\Http\Resources\Trip\TripResource;
 use App\Models\AttractionCategory;
+use App\Models\Trip;
 use App\Repositories\AttractionCategoryRepository;
 use App\Repositories\AttractionRepository;
 use Illuminate\Http\Request;
@@ -79,7 +81,7 @@ class AttractionCategoryController extends Controller
         }
         $attractions = $this->attractionRepository->getAllFiltered($filters);
 
-        $attractions->with(['category', 'defaultImage']);
+        $attractions->with(['category', 'thumbnail']);
         $attractionsPaginated = $attractions->paginate($perPage);
         
         $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
@@ -128,6 +130,34 @@ class AttractionCategoryController extends Controller
             'tree' => $attractionCategories->get()->toTree(),
             'count' => $attractionCategories->count()
         ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getAttractionsPageData(Request $request)
+    {
+        //Can't apply constraint (limit 3) after eager loading relation, for each relation. (works only for the first relation)
+        //Solution: go through each category and use the load()
+        $categories = AttractionCategory::whereNull('parent_id')->get();
+        $categories->each(function($category) {
+            $category->load([
+                'attractions' => fn($q) => $q->limit(3),
+                'attractions.thumbnail',
+            ]);
+        });
+        $trips = Trip::with('thumbnail')
+            ->limit(3)
+            ->orderBy('id', 'desc')
+            ->get();
+        return $this->responseSuccess([
+            'categories' => AttractionCategoryResource::collection($categories),
+            'trips' => TripResource::collection($trips)
+        ]);
+    
     }
 
     /**

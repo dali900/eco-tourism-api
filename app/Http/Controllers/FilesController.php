@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
@@ -55,6 +56,24 @@ class FilesController extends Controller
         return $this->responseSuccess(FileResource::collection($filesCollection));
     }
 
+    public function createThumbnail(Request $request, $fileId)
+    {
+        $file = File::find($fileId);
+        if (!$file){
+            return $this->responseNotFound();
+        }
+        if ($file->file_tag !== 'image') {
+            return $this->responseValidationError(['message' => 'File is not an image']);
+        }
+
+        if ($file->fileModel->thumbnail) {
+            $file->fileModel->thumbnail->deleteFile();
+        }
+        $thumbnailFile = $file->makeThumbnail();
+
+        return $this->responseSuccess(FileResource::make($thumbnailFile));
+    }
+
     /**
      * Delete file from storage
      *
@@ -76,6 +95,9 @@ class FilesController extends Controller
         $file = File::where('file_path', $filePath)->first();
         if(!$file){
             return $this->responseNotFound();
+        }
+        if ($file->fileModel->thumbnail) {
+            $file->fileModel->thumbnail->deleteFile();
         }
         $file->delete();
         if(Storage::exists($filePath)){

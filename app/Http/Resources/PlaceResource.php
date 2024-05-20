@@ -31,6 +31,7 @@ class PlaceResource extends JsonResource
 			'parent_id' => $this->parent_id,
 			'parent' => PlaceResource::make($this->whenLoaded('parent')),
 			'images' => FileResource::collection($this->whenLoaded('images')),
+			'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
 			'attractions' => AttractionResource::collection($this->whenLoaded('attractions')),
 			'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
 			'created_at' => $this->created_at,

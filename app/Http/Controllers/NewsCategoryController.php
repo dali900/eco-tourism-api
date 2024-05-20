@@ -79,7 +79,7 @@ class NewsCategoryController extends Controller
             $query->whereIn('news_news_category.news_category_id', $categoriesIds);
         });
 
-        $news->with(['categories', 'images', 'defaultImage']);
+        $news->with(['categories', 'images', 'thumbnail']);
         $newsPaginated = $news->paginate($perPage);
         
         $newsResource = NewsResourcePaginated::make($newsPaginated);
@@ -104,7 +104,8 @@ class NewsCategoryController extends Controller
         $categories->each(function($category) {
             $category->load([
                 'news' => fn($q) => $q->orderByDesc('id')->limit(3),
-                'news.images'
+                'news.images',
+                'news.thumbnail',
             ]);
         });
         return $this->responseSuccess(NewsCategoryResource::collection($categories));

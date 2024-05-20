@@ -109,6 +109,7 @@ Route::prefix('/attraction-categories')->group(function () {
     Route::get('/category/{id}', [AttractionCategoryController::class, 'getCatagoryAttractions']);
     Route::get('/roots', [AttractionCategoryController::class, 'getRoots']);
     Route::get('/tree', [AttractionCategoryController::class, 'getTree']);
+    Route::get('/page-data', [AttractionCategoryController::class, 'getAttractionsPageData']);
     Route::get('/{id}', [AttractionCategoryController::class, 'get']);
 });
 
@@ -144,6 +145,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/upload-multiple', [FilesController::class, 'uploadMultiple']);
         Route::post('/delete', [FilesController::class, 'delete']);
         Route::post('/delete-tmp-file', [FilesController::class, 'deleteTmpFile']);
+        Route::post('/thumbnail/{fileId}', [FilesController::class, 'createThumbnail']);
     });
     //Attractions
     Route::prefix('/attractions')->middleware('role:author')->group(function () {

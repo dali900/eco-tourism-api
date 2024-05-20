@@ -36,6 +36,7 @@ class TripResource extends JsonResource
             'publish_date_year' => $this->publish_date ? Carbon::parse($this->publish_date)->translatedFormat("y") : null,
             'images' => FileResource::collection($this->whenLoaded('images')),
             'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
+            'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
 		];
     }
 }
