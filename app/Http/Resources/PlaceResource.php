@@ -26,7 +26,7 @@ class PlaceResource extends JsonResource
 			'longitude' => $this->longitude,
 			'map_link' => $this->map_link,
 			'order_num' => $this->order_num,
-			'visible' => $this->visible,
+			'visible' => $this->visible == 1 ? true : false,
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'parent_id' => $this->parent_id,
 			'parent' => PlaceResource::make($this->whenLoaded('parent')),

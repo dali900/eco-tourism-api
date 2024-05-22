@@ -52,6 +52,7 @@ class HomeController extends Controller
         $suggestedAttractions = Attraction::suggested()
             ->orderByDesc('id')
             ->limit(3)
+            ->with(['images', 'thumbnail'])
             ->get();
         $news = News::orderByDesc('id')
             ->limit(3)

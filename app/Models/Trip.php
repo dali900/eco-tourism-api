@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TripScope;
 use App\Traits\HandleFiles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,8 +20,17 @@ class Trip extends Model
         'summary',
         'publish_date',
         'file_path',
+        'approved',
         'slug'
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new TripScope);
+    }
 
     /**
      * User

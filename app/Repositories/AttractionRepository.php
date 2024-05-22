@@ -44,6 +44,7 @@ class AttractionRepository extends ModelRepository
                 $q->orWhereHas('category', function ($query) use ($searchValue, $matchMode) {
                     $this->searchText('name', $searchValue, $matchMode, $query);
                 });
+                $q->orWhere("id", "LIKE", $searchValue);
                 $q->orWhere("name", "LIKE", $searchValue);
                 $q->orWhere("title", "LIKE", $searchValue);
                 $q->orWhere("subtitle", "LIKE", $searchValue);
@@ -94,11 +95,17 @@ class AttractionRepository extends ModelRepository
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
                 $model = $model->whereIn('category_id', $value);
             }
-            if (!empty($params['approved'])) {
+            if (isset($params['approved'])) {
                 $fieldName = 'approved';
                 $value = $params[$fieldName];
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
-                $model = $model->where('approved', $value === "false" ? 0 : 1);
+                $model = $model->where('approved');
+            }
+            if (isset($params['visible'])) {
+                $fieldName = 'visible';
+                $value = $params[$fieldName];
+                $matchMode = ModelRepository::MATCH_MODE_EQUALS;
+                $model = $model->where('visible', $value);
             }
         }
 

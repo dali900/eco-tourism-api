@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AttractionScope;
 use App\Traits\HandleFiles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,14 @@ class Attraction extends Model
         'order_num',
         'note',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new AttractionScope);
+    }
 
     /**
      * User

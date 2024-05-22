@@ -35,6 +35,7 @@ class NewsResource extends JsonResource
             'images' => FileResource::collection($this->whenLoaded('images')),
             'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
             'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
+            'approved' => $this->approved == 1 ? true : false,
 		];
     }
 }

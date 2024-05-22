@@ -61,6 +61,12 @@ class TripRepository extends ModelRepository
                 $matchMode = $params[$fieldName . "_MatchMode"] ?? null;
                 $model = $this->searchText($fieldName, $searchText, $matchMode, $model);
             }
+			if (isset($params['approved'])) {
+                $fieldName = 'approved';
+                $value = $params[$fieldName];
+                $matchMode = ModelRepository::MATCH_MODE_EQUALS;
+                $model = $model->where('approved', $value);
+            }
         }
 
         if (!empty($params['attraction_ids'])) {

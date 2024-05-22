@@ -145,7 +145,7 @@ class AttractionCategoryController extends Controller
         $categories = AttractionCategory::whereNull('parent_id')->get();
         $categories->each(function($category) {
             $category->load([
-                'attractions' => fn($q) => $q->limit(3),
+                'attractions' => fn($q) => $q->orderByDesc('id')->limit(3),
                 'attractions.thumbnail',
             ]);
         });

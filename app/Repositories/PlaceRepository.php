@@ -80,7 +80,7 @@ class PlaceRepository extends ModelRepository
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
                 $model = $model->whereIn('parent_ids', $value);
             }
-            if (!empty($params['visible'])) {
+            if (isset($params['visible'])) {
                 $fieldName = 'visible';
                 $value = $params[$fieldName];
                 $matchMode = ModelRepository::MATCH_MODE_EQUALS;
