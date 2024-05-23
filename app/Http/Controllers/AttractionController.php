@@ -44,6 +44,7 @@ class AttractionController extends Controller
      */
     public function get(string $id)
     {
+        //return $this->responseSuccess(phpinfo());
         //$rt = \App\Models\RegulationType::treeOf(function($q){$q->where('id',83);})->get()->toTree();
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),

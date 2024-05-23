@@ -46,7 +46,7 @@ class File extends Model
         // create new image instance
         logger(storage_path('app/'.$thumbnailPath));
         $image = ImageManager::imagick()->read(storage_path('app/'.$thumbnailPath));
-        $image->scale(height: 270);
+        $image->scale(height: 330);
         $image->save();
 
         $fileModel = new File();
