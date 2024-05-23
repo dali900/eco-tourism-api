@@ -1,0 +1,53 @@
+    product: HP EliteDesk 800 G1 SFF (C8N26AV)
+       product: 1998
+          product: Intel(R) Core(TM) i5-4570 CPU @ 3.20GHz
+             product: 9905471-079.A00LF
+             product: 9905471-079.A00LF
+             product: HMT41GU6BFR8A-PB
+             product: M378B5173DB0-CK0
+          product: 4th Gen Core Processor DRAM Controller
+             product: Xeon E3-1200 v3/4th Gen Core Processor Integrated Graphics Controller
+             product: Xeon E3-1200 v3/4th Gen Core Processor HD Audio Controller
+                product: HDA Intel HDMI HDMI/DP,pcm=3
+                product: HDA Intel HDMI HDMI/DP,pcm=7
+                product: HDA Intel HDMI HDMI/DP,pcm=8
+             product: 8 Series/C220 Series Chipset Family USB xHCI
+                product: xHCI Host Controller
+                   product: MOSART Semi. 2.4G INPUT DEVICE
+                   product: LIDL Deskset LIDL Deskset
+                product: xHCI Host Controller
+             product: 8 Series/C220 Series Chipset Family MEI Controller #1
+             product: 8 Series/C220 Series Chipset Family KT Controller
+             product: Ethernet Connection I217-LM
+             product: 8 Series/C220 Series Chipset Family USB EHCI #2
+                product: EHCI Host Controller
+                   product: Integrated Rate Matching Hub
+             product: 8 Series/C220 Series Chipset High Definition Audio Controller
+                product: HDA Intel PCH Mic
+                product: HDA Intel PCH Line
+                product: HDA Intel PCH Line Out
+                product: HDA Intel PCH Front Headphone
+             product: 8 Series/C220 Series Chipset Family USB EHCI #1
+                product: EHCI Host Controller
+                   product: Integrated Rate Matching Hub
+             product: Q87 Express LPC Controller
+                product: PnP device PNP0c01
+                product: PnP device PNP0c02
+                product: PnP device PNP0b00
+                product: PnP device INT3f0d
+                product: PnP device PNP0c02
+                product: PnP device PNP0303
+                product: PnP device PNP0f03
+                product: PnP device PNP0c02
+                product: PnP device PNP0501
+                product: PnP device IFX0102
+                product: PnP device PNP0c02
+             product: 8 Series/C220 Series Chipset Family 6-port SATA Controller 1 [AHCI mode]
+                product: HP SSD S650 480G
+                product: DVDRAM GTB0N
+                product: ST500DM002-1BD14
+             product: 8 Series/C220 Series Chipset Family SMBus Controller
+       product: High Efficiency
+       product: Power Button
+       product: Power Button
+       product: HP WMI hotkeys
