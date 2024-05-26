@@ -74,7 +74,7 @@ class TripController extends Controller
         if(!empty($data['tmp_files'])){
             $trip->saveFiles($data['tmp_files'], 'trip/');
         }
-        if ($trip->images && $trip->images[0]) {
+        if (!empty($trip->images) && !empty($trip->images[0])) {
             $trip->images[0]->makeThumbnail();
         }
         $trip->load(['images', 'thumbnail', 'attractions']);

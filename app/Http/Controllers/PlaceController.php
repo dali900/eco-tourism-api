@@ -71,7 +71,7 @@ class PlaceController extends Controller
         if(!empty($data['tmp_files'])){
             $place->saveFiles($data['tmp_files'], 'places/');
         }
-        if ($place->images && $place->images[0]) {
+        if (!empty($place->images) && !empty($place->images[0])) {
             $place->images[0]->makeThumbnail();
         }
         $place->load(['images', 'thumbnail']);

@@ -75,7 +75,7 @@ class AttractionController extends Controller
             $attraction->saveFiles($data['tmp_files'], 'attractions/');
         }
         $attraction->load(['images', 'thumbnail']);
-        if ($attraction->images && $attraction->images[0]) {
+        if (!empty($attraction->images) && !empty($attraction->images[0])) {
             $attraction->images[0]->makeThumbnail();
         }
         $attraction->load(['thumbnail']);

@@ -95,7 +95,7 @@ class NewsController extends Controller
         if(!empty($data['tmp_files'])){
             $news->saveFiles($data['tmp_files'], 'news/');
         }
-        if ($news->images && $news->images[0]) {
+        if (!empty($news->images) && !empty($news->images[0])) {
             $news->images[0]->makeThumbnail();
         }
         $news->load(['images', 'thumbnail', 'categories']);
