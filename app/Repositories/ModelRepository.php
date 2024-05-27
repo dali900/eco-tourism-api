@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Transliterator;
 
 class ModelRepository
 {
@@ -91,5 +92,24 @@ class ModelRepository
             $operator = "!=";
         }
         return $model->where($searchField, $operator, $searchValue);
+    }
+
+    /**
+     * Translate content to cyrilic
+     *
+     * @param array $data
+     * @param array $fields
+     * @return array
+     */
+    public function transleCyrilica(array $data, array $fields): array
+    {
+        $translations = [];
+        foreach ($fields as $fieldName) {
+            if (!empty($data[$fieldName])) {
+                $translations[$fieldName] = Transliterator::toCyrillic($data[$fieldName]);
+            }
+        }
+        
+        return $translations;
     }
 }

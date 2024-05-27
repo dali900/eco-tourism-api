@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "843abc39fadcba925d373445319cf775",
+    "content-hash": "af84ae80d6ad7adc39817fe025e15c53",
     "packages": [
         {
             "name": "brick/math",
@@ -5775,6 +5775,57 @@
             "time": "2023-12-08T13:03:43+00:00"
         },
         {
+            "name": "turanjanin/serbian-transliterator",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/turanjanin/serbian-transliterator.git",
+                "reference": "d3c28e7ed31930fb9df10991bc635c1eff90126d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/turanjanin/serbian-transliterator/zipball/d3c28e7ed31930fb9df10991bc635c1eff90126d",
+                "reference": "d3c28e7ed31930fb9df10991bc635c1eff90126d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Turanjanin\\SerbianTransliterator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jovan Turanjanin",
+                    "email": "jovan@turanjanin.net",
+                    "homepage": "https://www.turanjanin.net"
+                }
+            ],
+            "description": "Transliterate between Serbian Cyrillic and Latin scripts.",
+            "keywords": [
+                "Serbian",
+                "cyrillic",
+                "latin",
+                "latinisation",
+                "transliteration"
+            ],
+            "support": {
+                "issues": "https://github.com/turanjanin/serbian-transliterator/issues",
+                "source": "https://github.com/turanjanin/serbian-transliterator/tree/1.0.0"
+            },
+            "time": "2021-03-30T22:58:29+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.0",
             "source": {
@@ -8504,5 +8555,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
