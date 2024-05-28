@@ -45,7 +45,7 @@ class PlaceController extends Controller
     {
         $place = Place::with([
             'images',
-            'attractions', 
+            'attractions.thumbnail', 
             'thumbnail'
         ])
         ->find($id);
