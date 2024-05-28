@@ -21,10 +21,6 @@ class Kernel extends ConsoleKernel
             $schedule->command('file:empty-tmp-folder')->hourly();
         }
         $schedule->command('file:empty-tmp-folder')->daily();
-        $schedule->command('plan:check-expired-subscriptions')->daily();
-        $schedule->command('plan:update-free-trials-status')->daily();
-        $schedule->command('plan:subscription-expiring-notification')->monthlyOn(1, '08:00');
-        $schedule->command('sanctum:prune-expired --hours=24')->daily();
     }
 
     /**
