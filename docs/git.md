@@ -1,4 +1,4 @@
-## 2. Git hooks post receive
+## 2. Git setup
 
 create git bare
 ```sh
@@ -98,7 +98,17 @@ echo "Done!"
 
 ```
 
-## Git remote
+Before pushing code to live prepare working directory
+```sh
+cd /var/www/
+mkdir selonatriklika.rs
+mkdir selonatriklika.rs/current
+mkdir selonatriklika.rs/versions
+mkdir selonatriklika.rs/versions/1
+sudo chown eco:www-data -R selonatriklika.rs/
+```
+
+## Add Git remote
 local git
 ```sh
 git remote -v
