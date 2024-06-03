@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
 			AttractionSeeder::class,
 			NewsCategorySeeder::class,
 			NewsSeeder::class,
+            LanguageSeeder::class,
+            AttractionTranslationSeeder::class,
 		]);
     }
 }

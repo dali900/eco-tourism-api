@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use App\Models\Scopes\AttractionScope;
+use App\Models\Translations\AttractionTranslation;
 use App\Traits\HandleFiles;
+use App\Traits\Translates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Attraction extends Model
 {
-    use HasFactory, HandleFiles;
+    use HasFactory, HandleFiles, Translates;
 
     protected $fillable = [
         'name',
@@ -77,6 +79,16 @@ class Attraction extends Model
     public function place(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Place::class, 'place_id');
+    }
+
+    /**
+     * Translations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(AttractionTranslation::class);
     }
 
     /**

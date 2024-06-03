@@ -33,6 +33,7 @@ class AttractionCreateRequest extends FormRequest
             ],
             'category_id' => 'required|numeric',
             'summary' => 'required|string',
+            'content' => 'required|string',
         ];
     }
 
@@ -54,6 +55,7 @@ class AttractionCreateRequest extends FormRequest
             'name' => 'Naziv',
             'category_id' => 'Kategorija',
             'summary' => 'Sažetak',
+            'content' => 'Sadržaj',
             'order_num' => 'Redni broj za naj noviji sadržaj'
         ];
     }

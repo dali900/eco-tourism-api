@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Attraction\AttractionCreateRequest;
 use App\Http\Requests\Attraction\AttractionUpdateRequest;
+use App\Http\Requests\Attraction\CreateTranslationRequest;
+use App\Http\Requests\Attraction\UpdateTranslationRequest;
 use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\Attraction\AttractionResourcePaginated;
 use App\Models\Attraction;
+use App\Models\Language;
+use App\Models\Translations\AttractionTranslation;
 use App\Repositories\AttractionRepository;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -42,20 +46,28 @@ class AttractionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function get(string $id)
+    public function get(string $id, string $langId = null)
     {
         //return $this->responseSuccess(phpinfo());
         //$rt = \App\Models\RegulationType::treeOf(function($q){$q->where('id',83);})->get()->toTree();
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
+            'translations' => fn ($query) => $query->where('language_id', $langId),
             'images',
             'thumbnail',
-            'place'
+            'place',
         ])->find($id);
         if(!$attraction){
             return $this->responseNotFound();
         }
-
+        if ($langId) {
+            if ($attraction->relationLoaded('translations') && !empty($attraction->translations[0])) {
+                $attraction->translateFromModel($attraction->translations[0]);
+            } else {
+                $attraction->emptyModel(new AttractionTranslation());
+            }
+        }
+        $languages = $attraction->getAllLanguages();
         return $this->responseSuccess(AttractionResource::make($attraction));
     }
 
@@ -109,6 +121,100 @@ class AttractionController extends Controller
         $attraction->load(['images', 'thumbnail']);
         
         return $this->responseSuccess(AttractionResource::make($attraction));
+    }
+
+    /**
+     * Create model translation
+     *
+     * @param CreateTranslationRequest $request
+     * @param string $id
+     * @param string $langId
+     */
+    public function createTranslation(CreateTranslationRequest $request, string $id, string $langId)
+    {
+        $user = auth()->user();
+
+        $attraction = Attraction::find($id);
+        if(!$attraction){
+            return $this->responseNotFound();
+        }
+        
+        if ($user->id != $attraction->user_id && !$user->hasEditorAccess()){
+            return $this->responseForbidden();
+        }
+
+        $language = Language::find($langId);
+
+        $data = $request->all();
+        $data['created_by'] = $user->id;
+        $data['attraction_id'] = $attraction->id;
+        $data['language_id'] = $language->id;
+        $data['lang_code'] = $language->lang_code;
+        $translation = AttractionTranslation::create($data);
+        $attraction->translateFromModel($translation);
+        
+        return $this->responseSuccess(AttractionResource::make($attraction));
+    }
+
+    /**
+     * Update model translation
+     *
+     * @param UpdateTranslationRequest $request
+     * @param string $id
+     * @param string $translationId
+     */
+    public function updateTranslation(UpdateTranslationRequest $request, string $id, string $langId)
+    {
+        $user = auth()->user();
+
+        $attraction = Attraction::find($id);
+        if(!$attraction){
+            return $this->responseNotFound();
+        }
+        $translation = AttractionTranslation::where('attraction_id', $id)->where('language_id', $langId)->first();
+        if(!$translation){
+            return $this->responseNotFound();
+        }
+        
+        if ($user->id != $attraction->user_id && !$user->hasEditorAccess()){
+            return $this->responseForbidden();
+        }
+
+        $data = $request->all();
+        $data['updated_by'] = $user->id;
+        $translation->update($data);
+        $attraction->translateFromModel($translation);
+        
+        return $this->responseSuccess(AttractionResource::make($attraction));
+    }
+    
+    /**
+     * Delete model translation
+     *
+     * @param UpdateTranslationRequest $request
+     * @param string $id
+     * @param string $translationId
+     */
+    public function deleteTranslation(string $id, string $translationId)
+    {
+        $user = auth()->user();
+
+        $attraction = Attraction::find($id);
+        if(!$attraction){
+            return $this->responseNotFound();
+        }
+        $translation = AttractionTranslation::find($translationId);
+        if(!$translation){
+            return $this->responseNotFound();
+        }
+        
+        if ($user->id != $attraction->user_id && !$user->hasEditorAccess()){
+            return $this->responseForbidden();
+        }
+
+        $translation->delete();
+        
+        return $this->responseSuccess();
     }
 
     /**

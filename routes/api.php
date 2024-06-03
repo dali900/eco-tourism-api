@@ -21,6 +21,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BannersController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\RegulationTypeController;
@@ -62,6 +63,11 @@ Route::prefix('/users')->group(function () {
     Route::post('/', [UserController::class, 'create']);
 });
 
+//Languages
+Route::prefix('/languages')->group(function () {
+    Route::get('/', [LanguagesController::class, 'index']);
+});
+
 //News
 Route::prefix('/news')->group(function () {
     Route::get('/', [NewsController::class, 'index']);
@@ -99,7 +105,7 @@ Route::prefix('/article-types')->group(function () {
 //Attracations
 Route::prefix('/attractions')->group(function () {
     Route::get('/', [AttractionController::class, 'index']);
-    Route::get('/{id}', [AttractionController::class, 'get']);
+    Route::get('/{id}/{langId?}', [AttractionController::class, 'get']);
     Route::post('/download-file/{id}', [AttractionController::class, 'downloadFile']);
 });
 
@@ -147,12 +153,23 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/delete-tmp-file', [FilesController::class, 'deleteTmpFile']);
         Route::post('/thumbnail/{fileId}', [FilesController::class, 'createThumbnail']);
     });
+
+    //Languages
+    Route::prefix('/languages')->middleware('role:author')->group(function () {
+        Route::post('/', [LanguagesController::class, 'store']);
+        Route::put('/{id}', [LanguagesController::class, 'update']);
+        Route::delete('/{id}', [LanguagesController::class, 'destroy']);
+    });
+
     //Attractions
     Route::prefix('/attractions')->middleware('role:author')->group(function () {
         Route::post('/', [AttractionController::class, 'store']);
         Route::put('/{id}', [AttractionController::class, 'update']);
         Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
+        Route::post('/{id}/translations/{langId}', [AttractionController::class, 'createTranslation']);
+        Route::put('/{id}/translations/{translationId}', [AttractionController::class, 'updateTranslation']);
+        Route::delete('/{id}/translations/{langId}', [AttractionController::class, 'deleteTranslation']);
     });
     //Attracation categories
     Route::prefix('/attraction-categories')->middleware('role:author')->group(function () {

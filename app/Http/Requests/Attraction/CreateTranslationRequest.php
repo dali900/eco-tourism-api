@@ -5,14 +5,12 @@ namespace App\Http\Requests\Attraction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AttractionUpdateRequest extends FormRequest
+class CreateTranslationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -20,18 +18,14 @@ class AttractionUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('attractions', 'name')->ignore($this->id)
+                'required', 'string', Rule::unique('attraction_translations', 'name')
             ],
-            'order_num' => [
-                'numeric', 'nullable', 'sometimes', Rule::unique('attractions', 'order_num')->ignore($this->id)
-            ],
-            'category_id' => 'required|numeric',
             'summary' => 'required|string',
             'content' => 'required|string',
         ];
@@ -46,11 +40,8 @@ class AttractionUpdateRequest extends FormRequest
     {
         return [
             'name' => 'Naziv',
-            'category_id' => 'Kategorija',
             'summary' => 'Sažetak',
             'content' => 'Sadržaj',
-            'order_num' => 'Redni broj za naj noviji sadržaj'
         ];
     }
-
 }
