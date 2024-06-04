@@ -105,6 +105,7 @@ Route::prefix('/article-types')->group(function () {
 //Attracations
 Route::prefix('/attractions')->group(function () {
     Route::get('/', [AttractionController::class, 'index']);
+    Route::get('/admin/{id}/{langId?}', [AttractionController::class, 'adminGet'])->middleware('role:admin');
     Route::get('/{id}/{langId?}', [AttractionController::class, 'get']);
     Route::post('/download-file/{id}', [AttractionController::class, 'downloadFile']);
 });
@@ -167,9 +168,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [AttractionController::class, 'update']);
         Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
-        Route::post('/{id}/translations/{langId}', [AttractionController::class, 'createTranslation']);
-        Route::put('/{id}/translations/{translationId}', [AttractionController::class, 'updateTranslation']);
-        Route::delete('/{id}/translations/{langId}', [AttractionController::class, 'deleteTranslation']);
+        Route::post('/{id}/languages/{langId}', [AttractionController::class, 'createTranslation']);
+        Route::put('/{id}/languages/{translationId}', [AttractionController::class, 'updateTranslation']);
+        Route::delete('/{id}/languages/{langId}', [AttractionController::class, 'deleteTranslation']);
     });
     //Attracation categories
     Route::prefix('/attraction-categories')->middleware('role:author')->group(function () {

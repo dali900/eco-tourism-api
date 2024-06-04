@@ -26,7 +26,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Srpski',
                 'translated_name' => 'Srpski',
-                'lang_code' => 'SR',
+                'lang_code' => 'sr',
                 'visible' => 1,
                 'note' => 'Latinica',
                 'translated_note' => NULL,
@@ -35,7 +35,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Srpski',
                 'translated_name' => 'Српски',
-                'lang_code' => 'SR',
+                'lang_code' => 'sr-Cyrl',
                 'visible' => 1,
                 'note' => 'Ćirilica',
                 'translated_note' => 'Ћирилица',
@@ -44,7 +44,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Engleski',
                 'translated_name' => 'English',
-                'lang_code' => 'EN',
+                'lang_code' => 'en',
                 'visible' => 0,
                 'note' => NULL,
                 'translated_note' => NULL,
@@ -53,7 +53,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Ruski',
                 'translated_name' => 'Русский',
-                'lang_code' => 'RU',
+                'lang_code' => 'ru',
                 'visible' => 0,
                 'note' => NULL,
                 'translated_note' => NULL,
@@ -61,7 +61,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Nemački',
-                'lang_code' => 'DE',
+                'lang_code' => 'de',
                 'translated_name' => 'Deutsch',
                 'visible' => 0,
                 'note' => NULL,
@@ -70,7 +70,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Francuski',
-                'lang_code' => 'FR',
+                'lang_code' => 'fr',
                 'translated_name' => 'Français',
                 'visible' => 0,
                 'note' => NULL,
@@ -79,7 +79,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Italijanski',
-                'lang_code' => 'IT',
+                'lang_code' => 'it',
                 'translated_name' => 'Italiano',
                 'visible' => 0,
                 'note' => NULL,
@@ -88,7 +88,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Kineski',
-                'lang_code' => 'ZH',
+                'lang_code' => 'zh',
                 'translated_name' => '汉语',
                 'visible' => 0,
                 'note' => NULL,
@@ -97,7 +97,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Mađarski',
-                'lang_code' => 'HU',
+                'lang_code' => 'hu',
                 'translated_name' => 'Magyar',
                 'visible' => 0,
                 'note' => NULL,
@@ -106,7 +106,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Rumusnki',
-                'lang_code' => 'RO',
+                'lang_code' => 'ro',
                 'translated_name' => 'Română',
                 'visible' => 0,
                 'note' => NULL,
@@ -115,7 +115,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Makedonski',
-                'lang_code' => 'MK',
+                'lang_code' => 'mk',
                 'translated_name' => 'Македонски',
                 'visible' => 0,
                 'note' => NULL,
@@ -125,7 +125,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Bugarski',
                 'translated_name' => 'Български',
-                'lang_code' => 'BG',
+                'lang_code' => 'bg',
                 'visible' => 0,
                 'note' => NULL,
                 'translated_note' => NULL,
@@ -133,7 +133,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Grčki',
-                'lang_code' => 'EL',
+                'lang_code' => 'el',
                 'translated_name' => 'Ελληνική',
                 'visible' => 0,
                 'note' => NULL,
@@ -142,7 +142,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Slovenački',
-                'lang_code' => 'SL',
+                'lang_code' => 'sl',
                 'translated_name' => 'Slovenščina',
                 'visible' => 0,
                 'note' => NULL,
@@ -151,7 +151,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Španski',
-                'lang_code' => 'ES',
+                'lang_code' => 'es',
                 'translated_name' => 'Español',
                 'visible' => 0,
                 'note' => NULL,
@@ -160,7 +160,7 @@ class LanguageSeeder extends Seeder
             ],
             [
                 'name' => 'Turski',
-                'lang_code' => 'TR',
+                'lang_code' => 'tr',
                 'translated_name' => 'Türkçe',
                 'visible' => 0,
                 'note' => NULL,

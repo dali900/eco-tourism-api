@@ -23,6 +23,7 @@ class AttractionResource extends JsonResource
 			'name' => $this->name,
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'category' => AttractionCategoryResource::make($this->whenLoaded('category')),
+			'translations' => AttractionTranslationResource::collection($this->whenLoaded('translations')),
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("d.m.Y.") : null,

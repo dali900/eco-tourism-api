@@ -10,6 +10,7 @@ use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\Attraction\AttractionResourcePaginated;
 use App\Models\Attraction;
 use App\Models\Language;
+use App\Models\Place;
 use App\Models\Translations\AttractionTranslation;
 use App\Repositories\AttractionRepository;
 use Illuminate\Validation\Rule;
@@ -48,8 +49,6 @@ class AttractionController extends Controller
      */
     public function get(string $id, string $langId = null)
     {
-        //return $this->responseSuccess(phpinfo());
-        //$rt = \App\Models\RegulationType::treeOf(function($q){$q->where('id',83);})->get()->toTree();
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
             'translations' => fn ($query) => $query->where('language_id', $langId),
@@ -60,6 +59,7 @@ class AttractionController extends Controller
         if(!$attraction){
             return $this->responseNotFound();
         }
+
         if ($langId) {
             if ($attraction->relationLoaded('translations') && !empty($attraction->translations[0])) {
                 $attraction->translateFromModel($attraction->translations[0]);
@@ -67,8 +67,34 @@ class AttractionController extends Controller
                 $attraction->emptyModel(new AttractionTranslation());
             }
         }
-        $languages = $attraction->getAllLanguages();
+
         return $this->responseSuccess(AttractionResource::make($attraction));
+    }
+
+    public function adminGet(string $id, string $langId = null)
+    {
+        $attraction = Attraction::with([
+            'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
+            'translations',
+            'images',
+            'thumbnail',
+            'place',
+        ])->find($id);
+        if(!$attraction){
+            return $this->responseNotFound();
+        }
+
+        if ($langId) {
+            if (!$attraction->translateModel($langId)) {
+                $attraction->emptyModel(new AttractionTranslation());
+            } 
+        }
+
+        return $this->responseSuccess([
+            'attraction' => AttractionResource::make($attraction),
+            'languages' => Language::get(),
+            'places' => Place::get()
+        ]);
     }
 
     /**
@@ -171,18 +197,25 @@ class AttractionController extends Controller
         if(!$attraction){
             return $this->responseNotFound();
         }
-        $translation = AttractionTranslation::where('attraction_id', $id)->where('language_id', $langId)->first();
-        if(!$translation){
-            return $this->responseNotFound();
-        }
         
         if ($user->id != $attraction->user_id && !$user->hasEditorAccess()){
             return $this->responseForbidden();
         }
 
         $data = $request->all();
-        $data['updated_by'] = $user->id;
-        $translation->update($data);
+        $translation = AttractionTranslation::where('attraction_id', $id)->where('language_id', $langId)->first();
+        if(!$translation){
+            $language = Language::find($langId);
+            $data['created_by'] = $user->id;
+            $data['attraction_id'] = $attraction->id;
+            $data['language_id'] = $language->id;
+            $data['lang_code'] = $language->lang_code;
+            $translation = AttractionTranslation::create($data);
+        } else {
+            $data['updated_by'] = $user->id;
+            $translation->update($data);
+        }
+        $attraction->load('translations');
         $attraction->translateFromModel($translation);
         
         return $this->responseSuccess(AttractionResource::make($attraction));
@@ -195,7 +228,7 @@ class AttractionController extends Controller
      * @param string $id
      * @param string $translationId
      */
-    public function deleteTranslation(string $id, string $translationId)
+    public function deleteTranslation(string $id, string $langId)
     {
         $user = auth()->user();
 
@@ -203,7 +236,7 @@ class AttractionController extends Controller
         if(!$attraction){
             return $this->responseNotFound();
         }
-        $translation = AttractionTranslation::find($translationId);
+        $translation = AttractionTranslation::where('attraction_id', $id)->where('language_id', $langId)->first();
         if(!$translation){
             return $this->responseNotFound();
         }
