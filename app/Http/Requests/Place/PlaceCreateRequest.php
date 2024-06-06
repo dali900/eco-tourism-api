@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Place;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PlaceCreateRequest extends FormRequest
 {
@@ -22,7 +23,9 @@ class PlaceCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:128',
+            'name' => [
+                'required', 'string', 'max:128', Rule::unique('places', 'name')
+            ],
             'description' => 'nullable|string',
         ];
     }

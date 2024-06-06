@@ -26,13 +26,13 @@ class AttractionUpdateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('attractions', 'name')->ignore($this->id)
+                'required', 'string', 'max:128', Rule::unique('attractions', 'name')->ignore($this->id)
             ],
             'order_num' => [
                 'numeric', 'nullable', 'sometimes', Rule::unique('attractions', 'order_num')->ignore($this->id)
             ],
             'category_id' => 'required|numeric',
-            'summary' => 'required|string',
+            'summary' => 'required|string|max:512',
             'content' => 'required|string',
         ];
     }

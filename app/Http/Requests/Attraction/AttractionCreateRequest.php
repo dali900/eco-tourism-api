@@ -26,13 +26,13 @@ class AttractionCreateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('attractions', 'name')
+                'required', 'string', 'max:128', Rule::unique('attractions', 'name')
             ],
             'order_num' => [
                 'numeric', 'nullable', Rule::unique('attractions', 'order_num')
             ],
             'category_id' => 'required|numeric',
-            'summary' => 'required|string',
+            'summary' => 'required|string|max:512',
             'content' => 'required|string',
         ];
     }

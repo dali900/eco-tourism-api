@@ -24,9 +24,9 @@ class CreateTranslationRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('attraction_translations', 'name')
+                'required', 'string', 'max:128', Rule::unique('attraction_translations', 'name')
             ],
-            'summary' => 'required|string',
+            'summary' => 'required|string|max:512',
             'content' => 'required|string',
         ];
     }
