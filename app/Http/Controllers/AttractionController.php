@@ -199,7 +199,7 @@ class AttractionController extends Controller
         //Update cuyrillic translation
         if ($language->lang_code === Language::SR_CODE) {
             $translation = $attraction->getTranslationByLangCode(Language::SR_CYRL_CODE);
-            if(!$translation) {
+            if($translation) {
                 $translationData = $attraction->getCyrillicTranslation($translation);
                 $translationData['updated_by'] = $user->id;
                 $translation->update($translationData);
@@ -208,7 +208,7 @@ class AttractionController extends Controller
         } else if ($language->lang_code === Language::SR_CYRL_CODE) {
         //Update latin translation
             $translation = $attraction->getTranslationByLangCode(Language::SR_CODE);
-            if(!$translation) {
+            if($translation) {
                 $translationData = $attraction->getLatinTranslation($translation);
                 $translationData['updated_by'] = $user->id;
                 $translation->update($translationData);
