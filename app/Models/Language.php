@@ -9,6 +9,9 @@ class Language extends Model
 {
     use HasFactory;
 
+    const SR_CODE = 'sr';
+    const SR_CYRL_CODE = 'sr-Cyrl';
+
     protected $fillable = [
         'name',
         'translated_name',
@@ -19,4 +22,15 @@ class Language extends Model
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Find language by code
+     *
+     * @param string $langCode
+     * @return Model|null
+     */
+    public static function findByCode(string $langCode)
+    {
+        return self::where('lang_code', $langCode)->first();
+    }
 }

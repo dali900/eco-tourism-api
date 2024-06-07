@@ -164,13 +164,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Attractions
     Route::prefix('/attractions')->middleware('role:author')->group(function () {
-        Route::post('/', [AttractionController::class, 'store']);
-        Route::put('/{id}', [AttractionController::class, 'update']);
+        Route::post('/{langId}', [AttractionController::class, 'store']);
+        Route::put('/{id}/{langId}', [AttractionController::class, 'update']);
         Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
-        Route::post('/{id}/languages/{langId}', [AttractionController::class, 'createTranslation']);
+        /* Route::post('/{id}/languages/{langId}', [AttractionController::class, 'createTranslation']);
         Route::put('/{id}/languages/{translationId}', [AttractionController::class, 'updateTranslation']);
-        Route::delete('/{id}/languages/{langId}', [AttractionController::class, 'deleteTranslation']);
+        Route::delete('/{id}/languages/{langId}', [AttractionController::class, 'deleteTranslation']); */
     });
     //Attracation categories
     Route::prefix('/attraction-categories')->middleware('role:author')->group(function () {

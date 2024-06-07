@@ -26,7 +26,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Srpski',
                 'translated_name' => 'Srpski',
-                'lang_code' => 'sr',
+                'lang_code' => Language::SR_CODE,
                 'visible' => 1,
                 'note' => 'Latinica',
                 'translated_note' => NULL,
@@ -35,7 +35,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'Srpski',
                 'translated_name' => 'Српски',
-                'lang_code' => 'sr-Cyrl',
+                'lang_code' => Language::SR_CYRL_CODE,
                 'visible' => 1,
                 'note' => 'Ćirilica',
                 'translated_note' => 'Ћирилица',
