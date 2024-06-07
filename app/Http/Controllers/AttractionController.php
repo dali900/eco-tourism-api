@@ -199,16 +199,20 @@ class AttractionController extends Controller
         //Update cuyrillic translation
         if ($language->lang_code === Language::SR_CODE) {
             $translation = $attraction->getTranslationByLangCode(Language::SR_CYRL_CODE);
-            $translationData = $attraction->getCyrillicTranslation($translation);
-            $translationData['updated_by'] = $user->id;
-            $translation->update($translationData);
+            if(!$translation) {
+                $translationData = $attraction->getCyrillicTranslation($translation);
+                $translationData['updated_by'] = $user->id;
+                $translation->update($translationData);
+            }
            
         } else if ($language->lang_code === Language::SR_CYRL_CODE) {
         //Update latin translation
             $translation = $attraction->getTranslationByLangCode(Language::SR_CODE);
-            $translationData = $attraction->getLatinTranslation($translation);
-            $translationData['updated_by'] = $user->id;
-            $translation->update($translationData);
+            if(!$translation) {
+                $translationData = $attraction->getLatinTranslation($translation);
+                $translationData['updated_by'] = $user->id;
+                $translation->update($translationData);
+            }
         }
 
         $attraction->load(['images', 'thumbnail', 'translations']);
@@ -252,7 +256,7 @@ class AttractionController extends Controller
 
     /**
      * Update model translation. Used to create and update translation
-     *
+     * Not used
      * @param UpdateTranslationRequest $request
      * @param string $id
      * @param string $translationId
