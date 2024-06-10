@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use App\Models\Scopes\TripScope;
+use App\Models\Translations\TripTranslation;
 use App\Traits\HandleFiles;
+use App\Traits\Translates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
-    use HasFactory, HandleFiles;
+    use HasFactory, HandleFiles, Translates;
 
     protected $fillable = [
         'title',
@@ -30,6 +32,16 @@ class Trip extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new TripScope);
+    }
+
+    /**
+     * Translations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(TripTranslation::class);
     }
 
     /**

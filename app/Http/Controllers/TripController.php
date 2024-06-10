@@ -10,6 +10,8 @@ use App\Http\Resources\Trip\TripResource;
 use App\Http\Requests\Trip\TripCreateRequest;
 use App\Http\Requests\Trip\TripUpdateRequest;
 use App\Http\Resources\Trip\TripResourcePaginated;
+use App\Models\Language;
+use App\Models\Translations\TripTranslation;
 use Carbon\Carbon;
 
 class TripController extends Controller
@@ -44,11 +46,53 @@ class TripController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function get($id)
+    public function get($id, string $langId = null)
     {
-        $trip = Trip::with(['images', 'thumbnail', 'attractions.thumbnail'])->find($id);
+        $trip = Trip::with([
+            'images', 
+            'thumbnail', 
+            'attractions.thumbnail',
+            'translations' => fn ($query) => $query->where('language_id', $langId),
+        ])->find($id);
         if(!$trip){
             return $this->responseNotFound();
+        }
+
+        if ($langId) {
+            if ($trip->relationLoaded('translations') && !empty($trip->translations[0])) {
+                $trip->translateFromModel($trip->translations[0]);
+            } else {
+                $trip->translateModelByLangCode(Language::SR_CODE);
+            }
+        }
+
+        return $this->responseSuccess(TripResource::make($trip));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function adminGet($id, string $langId = null)
+    {
+        $trip = Trip::with([
+            'images', 
+            'thumbnail', 
+            'attractions.thumbnail',
+            'translations' => fn ($query) => $query->where('language_id', $langId),
+        ])->find($id);
+        if(!$trip){
+            return $this->responseNotFound();
+        }
+
+        if ($langId) {
+            if (!$trip->translateModelByLangId($langId)) {
+                $trip->emptyModel(new TripTranslation());
+            } 
+        } else {
+            $trip->translateModelByLangCode(Language::SR_CODE);
         }
 
         return $this->responseSuccess(TripResource::make($trip));
