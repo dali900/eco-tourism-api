@@ -18,12 +18,24 @@ class AttractionResource extends JsonResource
      */
     public function toArray($request)
     {
+		$translation = [
+			'name' => $this->name,
+			'title' => $this->title,
+			'subtitle' => $this->subtitle,
+			'summary' => $this->summary,
+			'content' => $this->content,
+		];
+		if ($this->relationLoaded('translation') && $this->translaion) {
+			$translation = AttractionTranslationResource::make($this->whenLoaded('translation'));
+		}
         return [
 			'id' => $this->id,
 			'name' => $this->name,
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'category' => AttractionCategoryResource::make($this->whenLoaded('category')),
 			'translations' => AttractionTranslationResource::collection($this->whenLoaded('translations')),
+			//'translation' => AttractionTranslationResource::make($this->whenLoaded('translation')),
+			't' => $translation,
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("d.m.Y.") : null,

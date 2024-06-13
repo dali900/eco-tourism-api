@@ -21,9 +21,9 @@ class AttractionRepository extends ModelRepository
      * @param array $params
      * @return Attraction
      */
-    public function getAllFiltered($params = [])
+    public function getAllFiltered($params = [], $queryBuilder = null)
     {
-        $model = $this->model;
+        $model = $queryBuilder ?? $this->model;
         $authUser = auth()->user();
         if (empty($authUser) || !$authUser->hasAuthorAccess()) { 
             $model = $model->where('approved', '=', 1);
@@ -130,7 +130,7 @@ class AttractionRepository extends ModelRepository
             $model = $model->orderBy($sortField, $direction);
         }
 
-        $model->orderBy($this->tableName.".name", "asc");
+        $model->orderBy($this->tableName.".id", "desc");
 
         return $model;
     }

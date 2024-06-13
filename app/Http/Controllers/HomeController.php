@@ -43,20 +43,32 @@ class HomeController extends Controller
      */
     public function getHomePageData(Request $request): JsonResponse
     {
+        $langId = $request->input('langId');
         $attractions = Attraction::notSuggested()
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
             ->limit(3)
-            ->with(['images', 'thumbnail'])
+            ->with([
+                'images', 
+                'thumbnail',
+                'translation' => fn ($query) => $query->where('language_id', $langId),
+            ])
             ->get();
         $suggestedAttractions = Attraction::suggested()
             ->orderByDesc('id')
             ->limit(3)
-            ->with(['images', 'thumbnail'])
+            ->with([
+                'images', 
+                'thumbnail',
+                'translations' => fn ($query) => $query->where('language_id', $langId),
+            ])
             ->get();
         $news = News::orderByDesc('id')
             ->limit(3)
-            ->with(['images', 'thumbnail'])
+            ->with([
+                'images', 
+                'thumbnail',
+            ])
             ->get();
 
         $counts = DB::select("

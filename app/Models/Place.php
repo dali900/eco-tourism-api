@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use App\Models\Scopes\PlaceScope;
+use App\Models\Translations\PlaceTranslation;
 use App\Traits\HandleFiles;
+use App\Traits\Translates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Place extends Model
 {
-    use HasFactory, HasRecursiveRelationships, HandleFiles;
+    use HasFactory, HasRecursiveRelationships, HandleFiles, Translates;
 
     protected $fillable = [
         'name',
@@ -31,6 +33,16 @@ class Place extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new PlaceScope);
+    }
+
+    /**
+     * Translations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(PlaceTranslation::class);
     }
 
     /**

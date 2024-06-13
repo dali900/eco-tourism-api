@@ -18,6 +18,7 @@ class PlaceSeeder extends Seeder
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
+        DB::table('place_translations')->truncate();
         DB::table('places')->truncate();
         Schema::enableForeignKeyConstraints();
 

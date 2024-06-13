@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Attraction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Language;
-use App\Models\Translations\AttractionTranslation;
+use App\Models\Place;
+use App\Models\Translations\PlaceTranslation;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Turanjanin\SerbianTransliterator\Transliterator;
 
-class AttractionTranslationSeeder extends Seeder
+class PlaceTranslationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,21 +20,21 @@ class AttractionTranslationSeeder extends Seeder
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
-        DB::table('attraction_translations')->truncate();
+        DB::table('place_translations')->truncate();
 		Schema::enableForeignKeyConstraints();
 
         $user = User::first();
-        $attractions = Attraction::get();
-        foreach ($attractions as $attraction) {
+        $places = Place::get();
+        foreach ($places as $place) {
             //SR lang
-            AttractionTranslation::factory()
+            PlaceTranslation::factory()
             ->state(new Sequence(
-                function (Sequence $sequence) use ($attraction) {
+                function (Sequence $sequence) use ($place) {
                     $language = Language::findByCode(Language::SR_CODE);
                     return [
-                        'name' => $language->lang_code.' - '.$attraction->name,
-                        'title' => $language->lang_code.' - '.$attraction->title,
-                        'attraction_id' => $attraction->id,
+                        'name' => $language->lang_code.' - '.$place->name,
+                        'description' => $language->lang_code.' - '.$place->description,
+                        'place_id' => $place->id,
                         'language_id' => $language->id,
                         'lang_code' => $language->lang_code,
                     ];
@@ -45,16 +45,14 @@ class AttractionTranslationSeeder extends Seeder
                 ]);
                 
             //SR_CYRL lang
-            AttractionTranslation::factory()
+            PlaceTranslation::factory()
             ->state(new Sequence(
-                function (Sequence $sequence) use ($attraction) {
+                function (Sequence $sequence) use ($place) {
                     $language = Language::findByCode(Language::SR_CYRL_CODE);
                     return [
-                        'name' => $language->lang_code.' - '.Transliterator::toCyrillic($attraction->name),
-                        'title' => $language->lang_code.' - '.Transliterator::toCyrillic($attraction->title),
-                        'summary' => $language->lang_code.' - '.Transliterator::toCyrillic($attraction->summary),
-                        'content' => $language->lang_code.' - '.Transliterator::toCyrillic($attraction->content),
-                        'attraction_id' => $attraction->id,
+                        'name' => $language->lang_code.' - '.Transliterator::toCyrillic($place->name),
+                        'description' => $language->lang_code.' - '.Transliterator::toCyrillic($place->description),
+                        'place_id' => $place->id,
                         'language_id' => $language->id,
                         'lang_code' => $language->lang_code,
                     ];
@@ -63,16 +61,16 @@ class AttractionTranslationSeeder extends Seeder
                 ->create([
                     'created_by' => $user->id
                 ]);
-            
+
             //Random langs
-            AttractionTranslation::factory()->count(3)
+            PlaceTranslation::factory()->count(3)
             ->state(new Sequence(
-                function (Sequence $sequence) use ($attraction) {
+                function (Sequence $sequence) use ($place) {
                     $language = Language::inRandomOrder()->first();
                     return [
-                        'name' => $language->lang_code.' - '.$attraction->name,
-                        'title' => $language->lang_code.' - '.$attraction->title,
-                        'attraction_id' => $attraction->id,
+                        'name' => $language->lang_code.' - '.$place->name,
+                        'description' => $language->lang_code.' - '.$place->description,
+                        'place_id' => $place->id,
                         'language_id' => $language->id,
                         'lang_code' => $language->lang_code,
                     ];

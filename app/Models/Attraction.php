@@ -92,6 +92,16 @@ class Attraction extends Model
     }
 
     /**
+     * Translation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translation()
+    {
+        return $this->hasOne(AttractionTranslation::class);
+    }
+
+    /**
      * Image Files
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany

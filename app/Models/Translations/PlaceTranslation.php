@@ -6,17 +6,15 @@ use App\Models\Language;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TripTranslation extends Model
+class PlaceTranslation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'trip_id',
+        'place_id',
         'language_id',
-        'title',
-        'subtitle',
-        'text',
-        'summary',
+        'name',
+        'description',
         'approved',
         'created_by',
         'updated_by',
@@ -24,10 +22,7 @@ class TripTranslation extends Model
 
     public $translateFields = [
         'name',
-        'title',
-        'subtitle',
-        'summary',
-        'content',
+        'description',
     ];
 
     /**

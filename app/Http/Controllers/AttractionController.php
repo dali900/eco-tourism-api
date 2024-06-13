@@ -32,16 +32,20 @@ class AttractionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, string $langId = null)
     {
         $perPage = $request->perPage ?? 20;
-        $attractions = $this->attractionRepository->getAllFiltered($request->all());
-
-        $attractions->with(['category', 'thumbnail']);
+        $attractions = Attraction::with([
+            'category',
+            'thumbnail',
+            'translations' => fn ($query) => $query->where('language_id', $langId),
+        ]);;
+        $attractions = $this->attractionRepository->getAllFiltered($request->all(), $attractions);
         $attractionsPaginated = $attractions->paginate($perPage);
         
         $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
         return $this->responseSuccess($attractionResource);
+        
     }
     
     /**

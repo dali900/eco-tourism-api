@@ -21,8 +21,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
 			UserSeeder::class,
 			PlaceSeeder::class,
+			PlaceTranslationSeeder::class,
 			AttractionCategorySeeder::class,
 			AttractionSeeder::class,
+            TripSeeder::class,
+            TripTranslationSeeder::class,
 			NewsCategorySeeder::class,
 			NewsSeeder::class,
             LanguageSeeder::class,
