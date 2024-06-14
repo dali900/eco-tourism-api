@@ -25,8 +25,8 @@ class AttractionResource extends JsonResource
 			'summary' => $this->summary,
 			'content' => $this->content,
 		];
-		if ($this->relationLoaded('translation') && $this->translaion) {
-			$translation = AttractionTranslationResource::make($this->whenLoaded('translation'));
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = AttractionTranslationResource::make($this->translation);
 		}
         return [
 			'id' => $this->id,

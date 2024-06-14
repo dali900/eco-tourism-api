@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\News\NewsResource;
 use App\Models\Attraction;
+use App\Models\Language;
 use App\Models\News;
 use App\Models\NewsCategory;
 use Illuminate\Http\JsonResponse;
@@ -44,6 +45,10 @@ class HomeController extends Controller
     public function getHomePageData(Request $request): JsonResponse
     {
         $langId = $request->input('langId');
+        if (!$langId) {
+            //TODO: make helper function
+            $langId = Language::findByCode(Language::SR_CODE)->id;
+        }
         $attractions = Attraction::notSuggested()
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
