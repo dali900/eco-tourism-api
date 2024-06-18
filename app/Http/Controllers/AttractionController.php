@@ -32,8 +32,10 @@ class AttractionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, string $langId = null)
+    public function index(Request $request)
     {
+        $langId = getLnaguageId($request);
+
         $perPage = $request->perPage ?? 20;
         $attractions = Attraction::with([
             'category',
@@ -53,23 +55,16 @@ class AttractionController extends Controller
      */
     public function get(string $id, string $langId = null)
     {
+        $langId = getSelectedOrDefaultLangId($langId);
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
-            'translations' => fn ($query) => $query->where('language_id', $langId),
+            'translation' => fn ($query) => $query->where('language_id', $langId),
             'images',
             'thumbnail',
             'place',
         ])->find($id);
         if(!$attraction){
             return $this->responseNotFound();
-        }
-
-        if ($langId) {
-            if ($attraction->relationLoaded('translations') && !empty($attraction->translations[0])) {
-                $attraction->translateFromModel($attraction->translations[0]);
-            } else {
-                $attraction->emptyModel(new AttractionTranslation());
-            }
         }
 
         return $this->responseSuccess(AttractionResource::make($attraction));
@@ -186,7 +181,9 @@ class AttractionController extends Controller
         if(!empty($data['tmp_files'])){
             $attraction->saveFiles($data['tmp_files'], 'attractions/');
         }
-        $attraction->update($data);
+        if ($language->lang_code === Language::SR_CODE) {
+            $attraction->update($data);
+        }
         $translationData = $request->all();
         $translationData['updated_by'] = $user->id;
         $translation = $attraction->getTranslationByLangId($langId);

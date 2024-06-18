@@ -104,7 +104,7 @@ Route::prefix('/article-types')->group(function () {
 
 //Attracations
 Route::prefix('/attractions')->group(function () {
-    Route::get('/{langId?}', [AttractionController::class, 'index']);
+    Route::get('/', [AttractionController::class, 'index']);
     Route::get('/admin/{id}/{langId?}', [AttractionController::class, 'adminGet'])->middleware('role:admin');
     Route::get('/{id}/{langId?}', [AttractionController::class, 'get']);
     Route::post('/download-file/{id}', [AttractionController::class, 'downloadFile']);

@@ -16,7 +16,7 @@ class LanguagesController extends Controller
     {
         $user = auth()->user();
         $languages = null;
-        if (!$user->hasEditorAccess()){
+        if (!$user || !$user->hasEditorAccess()){
             $languages = Language::where('visible', 1)->get();
         } else {
             $languages = Language::get();

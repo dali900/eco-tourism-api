@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Translations\AttractionCategoryTranslation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
@@ -12,12 +13,6 @@ class AttractionCategory extends Model
 
     protected $fillable = [
         'name',
-        'subtitle',
-        'parent_id',
-        'slug',
-        'summary',
-        'text',
-        'publish_date',
         'approved',
         'created_by',
         'updated_by',
@@ -41,6 +36,26 @@ class AttractionCategory extends Model
     public function recursiveAttractions()
     {
         return $this->hasManyOfDescendantsAndSelf(Attraction::class, 'category_id');
+    }
+
+    /**
+     * Translations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(AttractionCategoryTranslation::class);
+    }
+
+    /**
+     * Translation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translation()
+    {
+        return $this->hasOne(AttractionCategoryTranslation::class);
     }
 
     /**

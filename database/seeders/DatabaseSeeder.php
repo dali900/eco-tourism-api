@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
 			UserSeeder::class,
+            LanguageSeeder::class,
 			PlaceSeeder::class,
 			PlaceTranslationSeeder::class,
 			AttractionCategorySeeder::class,
@@ -28,7 +29,6 @@ class DatabaseSeeder extends Seeder
             TripTranslationSeeder::class,
 			NewsCategorySeeder::class,
 			NewsSeeder::class,
-            LanguageSeeder::class,
             AttractionTranslationSeeder::class,
 		]);
     }

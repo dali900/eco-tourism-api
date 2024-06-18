@@ -42,13 +42,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getHomePageData(Request $request): JsonResponse
+    public function getHomePageData(Request $request)
     {
-        $langId = $request->input('langId');
-        if (!$langId) {
-            //TODO: make helper function
-            $langId = Language::findByCode(Language::SR_CODE)->id;
-        }
+        $langId = getLnaguageId($request);
+
         $attractions = Attraction::notSuggested()
             ->orderByRaw('-order_num DESC')
             ->orderByDesc('id')
@@ -65,7 +62,7 @@ class HomeController extends Controller
             ->with([
                 'images', 
                 'thumbnail',
-                'translations' => fn ($query) => $query->where('language_id', $langId),
+                'translation' => fn ($query) => $query->where('language_id', $langId),
             ])
             ->get();
         $news = News::orderByDesc('id')

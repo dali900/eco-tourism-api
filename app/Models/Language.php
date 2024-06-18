@@ -9,8 +9,8 @@ class Language extends Model
 {
     use HasFactory;
 
-    const SR_CODE = 'sr';
-    const SR_CYRL_CODE = 'sr-Cyrl';
+    const SR_CODE = 'sr-latin';
+    const SR_CYRL_CODE = 'sr-cyrillic';
 
     protected $fillable = [
         'name',

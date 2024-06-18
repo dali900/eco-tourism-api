@@ -67,6 +67,7 @@ class AttractionCategoryController extends Controller
      */
     public function getCatagoryAttractions(Request $request, $id)
     {
+        $langId = getLnaguageId($request);
         $perPage = $request->perPage ?? 20;
         $category = AttractionCategory::find($id);
 
@@ -81,7 +82,11 @@ class AttractionCategoryController extends Controller
         }
         $attractions = $this->attractionRepository->getAllFiltered($filters);
 
-        $attractions->with(['category', 'thumbnail']);
+        $attractions->with([
+            'category',
+            'thumbnail',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
         $attractionsPaginated = $attractions->paginate($perPage);
         
         $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
@@ -140,13 +145,15 @@ class AttractionCategoryController extends Controller
      */
     public function getAttractionsPageData(Request $request)
     {
+        $langId = getLnaguageId($request);
         //Can't apply constraint (limit 3) after eager loading relation, for each relation. (works only for the first relation)
         //Solution: go through each category and use the load()
         $categories = AttractionCategory::whereNull('parent_id')->get();
-        $categories->each(function($category) {
+        $categories->each(function($category) use ($langId) {
             $category->load([
                 'attractions' => fn($q) => $q->orderByDesc('id')->limit(3),
                 'attractions.thumbnail',
+                'attractions.translation' => fn ($query) => $query->where('language_id', $langId),
             ]);
         });
         $trips = Trip::with('thumbnail')
