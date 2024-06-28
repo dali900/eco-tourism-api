@@ -16,6 +16,12 @@ class AttractionCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
+        $translation = [
+			'name' => $this->name,
+		];
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = AttractionCategoryTranslationResource::make($this->translation);
+		}
         return [
             'id' => $this->id,
             'key' => $this->id,
@@ -54,6 +60,8 @@ class AttractionCategoryResource extends JsonResource
             'attractions' => $this->when($this->relationLoaded('attractions'), function () {
                 return AttractionResource::collection($this->attractions);
             }),
+            't' => $translation,
+            'translations' => AttractionCategoryTranslationResource::collection($this->whenLoaded('translations')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("F d, Y") : null,

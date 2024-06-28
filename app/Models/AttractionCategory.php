@@ -3,19 +3,21 @@
 namespace App\Models;
 
 use App\Models\Translations\AttractionCategoryTranslation;
+use App\Traits\Translates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class AttractionCategory extends Model
 {
-    use HasFactory, HasRecursiveRelationships;
+    use HasFactory, HasRecursiveRelationships, Translates;
 
     protected $fillable = [
         'name',
         'approved',
         'created_by',
         'updated_by',
+        'parent_id'
     ];
 
     /**

@@ -2,6 +2,7 @@
 namespace App\Traits;
 
 use App\Models\File;
+use App\Models\Language;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -144,6 +145,75 @@ trait Translates
     public function getAllLanguages()
     {
         return $this->translations()->with('language')->select(['id', 'language_id', 'lang_code'])->get();
+    }
+
+    public function createTranslations($translationData, $language){
+        $userId = $translationData['user_id'];
+        $originalLanguage = $language;
+        //Create new translation
+        $translationData['created_by'] = $userId;
+        $translationData['language_id'] = $language->id;
+        $translationData['lang_code'] = $language->lang_code;
+        $translation = $this->translations()->create($translationData);
+
+        //Create latin translation
+        if ($language->lang_code === Language::SR_CODE) {
+            $language = Language::findByCode(Language::SR_CYRL_CODE);
+            $translationData = array_merge($translationData, $this->getCyrillicTranslation($translation));
+            $translationData['language_id'] = $language->id;
+            $translationData['lang_code'] = $language->lang_code;
+            $this->translations()->create($translationData);
+        } else if ($language->lang_code === Language::SR_CYRL_CODE) {
+            //Create cyrillic translation
+            $translation = $this->getTranslationByLangCode(Language::SR_CODE);
+            $language = Language::findByCode(Language::SR_CYRL_CODE);
+            $translationData = array_merge($translationData, $this->getCyrillicTranslation($translation));
+            $translationData['language_id'] = $language->id;
+            $translationData['lang_code'] = $language->lang_code;
+            $this->translations()->create($translationData);
+        } 
+        
+        if ($originalLanguage->lang_code !== Language::SR_CODE) {
+            return $this->translateModelByLangId($originalLanguage->id);
+        }
+    }
+    
+    public function syncTranslations($translationData, $language){
+        $userId = $translationData['user_id'];
+        $translationData['updated_by'] = $userId;
+        $translation = $this->getTranslationByLangId($language->id);
+        //Update translation
+        if ($translation) {
+            logger($translation->id);
+            $translation->update($translationData);
+        } else {
+            //Create new translation
+            $translationData['created_by'] = $userId;
+            $translationData['language_id'] = $language->id;
+            $translationData['lang_code'] = $language->lang_code;
+            $translation = $this->translations()->create($translationData);
+        }
+
+        //Update cuyrillic translation
+        if ($language->lang_code === Language::SR_CODE) {
+            $translation = $this->getTranslationByLangCode(Language::SR_CYRL_CODE);
+            if($translation) {
+                $translationData = $this->getCyrillicTranslation($translation);
+                $translationData['updated_by'] = $userId;
+                $translation->update($translationData);
+            }
+           
+        } else if ($language->lang_code === Language::SR_CYRL_CODE) {
+        //Update latin translation
+            $translation = $this->getTranslationByLangCode(Language::SR_CODE);
+            if($translation) {
+                $translationData = $this->getLatinTranslation($translation);
+                $translationData['updated_by'] = $userId;
+                $translation->update($translationData);
+            }
+        } 
+
+        return $this->translateModelByLangId($language->id);
     }
 
 }

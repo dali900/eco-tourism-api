@@ -45,6 +45,16 @@ class Trip extends Model
     }
 
     /**
+     * Translation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translation()
+    {
+        return $this->hasOne(TripTranslation::class);
+    }
+
+    /**
      * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

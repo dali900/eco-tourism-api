@@ -40,6 +40,9 @@ class TripCreateRequest extends FormRequest
             'attraction_ids.*' => [
                 'numeric'
             ],
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -56,6 +59,7 @@ class TripCreateRequest extends FormRequest
             'summary' => 'Sažetak',
             'text' => 'Tekst',
             'attraction_ids' => 'Znamenitosti',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 }

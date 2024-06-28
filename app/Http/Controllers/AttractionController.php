@@ -41,7 +41,7 @@ class AttractionController extends Controller
             'category',
             'thumbnail',
             'translations' => fn ($query) => $query->where('language_id', $langId),
-        ]);;
+        ]);
         $attractions = $this->attractionRepository->getAllFiltered($request->all(), $attractions);
         $attractionsPaginated = $attractions->paginate($perPage);
         
@@ -101,25 +101,23 @@ class AttractionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(AttractionCreateRequest $request, $langId)
+    public function store(AttractionCreateRequest $request)
     {
         $user = auth()->user();
-
+        
+        $data = $request->all();
+        $langId = $data['selected_language_id'];
         $language = Language::find($langId);
         if(!$language){
             return $this->responseNotFound();
         }
-
-        $data = $request->all();
         $data['created_by'] = $user->id;
         $attraction = Attraction::create($data);
-        
-        $translationData = $request->all();
-        $translationData['created_by'] = $user->id;
-        $translationData['language_id'] = $language->id;
-        $translationData['lang_code'] = $language->lang_code;
 
-        $attraction->translations()->create($translationData);
+        $translationData = $request->all();
+        $translationData['user_id'] = $user->id;
+        $translationData['attraction_id'] = $attraction->id;
+        $attraction->createTranslations($translationData, $language);
         
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
@@ -130,23 +128,6 @@ class AttractionController extends Controller
             $attraction->images[0]->makeThumbnail();
         }
         
-        //Add cuyrillic translation
-        if ($language->lang_code === Language::SR_CODE) {
-            $language = Language::findByCode(Language::SR_CYRL_CODE);
-            $translationData = $attraction->getCyrillicTranslation(new AttractionTranslation());
-            $translationData['created_by'] = $user->id;
-            $translationData['language_id'] = $language->id;
-            $translationData['lang_code'] = $language->lang_code;
-            $attraction->translations()->create($translationData);
-        } else if ($language->lang_code === Language::SR_CYRL_CODE) {
-            //Add latin translation
-            $language = Language::findByCode(Language::SR_CODE);
-            $translationData = $attraction->getLatinTranslation(new AttractionTranslation());
-            $translationData['created_by'] = $user->id;
-            $translationData['language_id'] = $language->id;
-            $translationData['lang_code'] = $language->lang_code;
-            $attraction->translations()->create($translationData);
-        }
 
         $attraction->load(['translations']);
 
@@ -156,7 +137,7 @@ class AttractionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AttractionUpdateRequest $request, string $id, $langId)
+    public function update(AttractionUpdateRequest $request, string $id)
     {
         $user = auth()->user();
         
@@ -165,6 +146,8 @@ class AttractionController extends Controller
             return $this->responseNotFound();
         }
         
+        $data = $request->all();
+        $langId = $data['selected_language_id'];
         $language = Language::find($langId);
         if(!$language){
             return $this->responseNotFound();
@@ -173,48 +156,19 @@ class AttractionController extends Controller
         if ($user->id != $attraction->user_id && !$user->hasEditorAccess()){
             return $this->responseForbidden();
         }
-        
 
-        $data = $request->all();
         $data['updated_by'] = $user->id;
         //Upload files
         if(!empty($data['tmp_files'])){
             $attraction->saveFiles($data['tmp_files'], 'attractions/');
         }
         if ($language->lang_code === Language::SR_CODE) {
-            $attraction->update($data);
+            $attraction->update($data); //Update default values
         }
         $translationData = $request->all();
-        $translationData['updated_by'] = $user->id;
-        $translation = $attraction->getTranslationByLangId($langId);
-        if ($translation) {
-            $translation->update($translationData);
-        } else {
-            $translationData['attraction_id'] = $attraction->id;
-            $translationData['created_by'] = $user->id;
-            $translationData['language_id'] = $language->id;
-            $translationData['lang_code'] = $language->lang_code;
-            $translation = $attraction->translations()->create($translationData);
-        }
-
-        //Update cuyrillic translation
-        if ($language->lang_code === Language::SR_CODE) {
-            $translation = $attraction->getTranslationByLangCode(Language::SR_CYRL_CODE);
-            if($translation) {
-                $translationData = $attraction->getCyrillicTranslation($translation);
-                $translationData['updated_by'] = $user->id;
-                $translation->update($translationData);
-            }
-           
-        } else if ($language->lang_code === Language::SR_CYRL_CODE) {
-        //Update latin translation
-            $translation = $attraction->getTranslationByLangCode(Language::SR_CODE);
-            if($translation) {
-                $translationData = $attraction->getLatinTranslation($translation);
-                $translationData['updated_by'] = $user->id;
-                $translation->update($translationData);
-            }
-        }
+        $translationData['user_id'] = $user->id;
+        $translationData['attraction_id'] = $attraction->id;
+        $attraction->syncTranslations($translationData, $language);
 
         $attraction->load(['images', 'thumbnail', 'translations']);
         

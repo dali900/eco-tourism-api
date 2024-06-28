@@ -17,9 +17,9 @@ class TripRepository extends ModelRepository
      * @param array $params
      * @return void
      */
-    public function getAllFiltered($params = [])
+    public function getAllFiltered($params = [], $queryBuilder)
     {
-        $model = $this->model;
+        $model = $queryBuilder ?? $this->model;
         
         //Global search
         if (!empty($params['global'])) {

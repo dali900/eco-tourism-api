@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Attraction\AttractionCategoryCreateRequest;
+use App\Http\Requests\Attraction\AttractionCategoryUpdateRequest;
 use App\Http\Resources\Attraction\AttractionCategoryResource;
 use App\Http\Resources\Attraction\AttractionCategoryResourcePaginated;
 use App\Http\Resources\Attraction\AttractionResource;
 use App\Http\Resources\Attraction\AttractionResourcePaginated;
 use App\Http\Resources\Trip\TripResource;
+use App\Models\Attraction;
 use App\Models\AttractionCategory;
+use App\Models\Language;
+use App\Models\Translations\AttractionCategoryTranslation;
 use App\Models\Trip;
 use App\Repositories\AttractionCategoryRepository;
 use App\Repositories\AttractionRepository;
@@ -51,15 +56,45 @@ class AttractionCategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function get(string $id)
+    public function get(string $id, string $langId = null)
     {
-        $attractionCategory = AttractionCategory::find($id);
+        $langId = getSelectedOrDefaultLangId($langId);
+        $attractionCategory = AttractionCategory::with([
+                'translation' => fn ($query) => $query->where('language_id', $langId)
+            ])
+            ->find($id);
         if(!$attractionCategory){
             return $this->responseNotFound();
         }
-        return $this->responseSuccess([
-            'regulation' => AttractionCategoryResource::make($attractionCategory)
-        ]);
+        $attractionCategory->translateModelByLangId($langId);
+
+        return $this->responseSuccess(AttractionCategoryResource::make($attractionCategory));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function adminGet(string $id, string $langId = null)
+    {
+        $langId = getSelectedOrDefaultLangId($langId);
+        $attractionCategory = AttractionCategory::with([
+                'translations',
+                'translation' => fn ($query) => $query->where('language_id', $langId)
+            ])
+            ->find($id);
+        if(!$attractionCategory){
+            return $this->responseNotFound();
+        }
+
+        if ($langId) {
+            if (!$attractionCategory->translateModelByLangId($langId)) {
+                $attractionCategory->emptyModel(new AttractionCategoryTranslation());
+            } 
+        } else {
+            $attractionCategory->translateModelByLangCode(Language::SR_CODE);
+        }
+
+        return $this->responseSuccess(AttractionCategoryResource::make($attractionCategory));
     }
 
     /**
@@ -80,13 +115,13 @@ class AttractionCategoryController extends Controller
         if ($categoriesIds) {
             $filters['category_ids'] = $categoriesIds;
         }
-        $attractions = $this->attractionRepository->getAllFiltered($filters);
-
-        $attractions->with([
+        
+        $attractions = Attraction::with([
             'category',
             'thumbnail',
             'translation' => fn ($query) => $query->where('language_id', $langId),
         ]);
+        $attractions = $this->attractionRepository->getAllFiltered($filters, $attractions);
         $attractionsPaginated = $attractions->paginate($perPage);
         
         $attractionResource = AttractionResourcePaginated::make($attractionsPaginated);
@@ -154,6 +189,7 @@ class AttractionCategoryController extends Controller
                 'attractions' => fn($q) => $q->orderByDesc('id')->limit(3),
                 'attractions.thumbnail',
                 'attractions.translation' => fn ($query) => $query->where('language_id', $langId),
+                'translation' => fn ($query) => $query->where('language_id', $langId),
             ]);
         });
         $trips = Trip::with('thumbnail')
@@ -170,33 +206,35 @@ class AttractionCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $attr = $request->validate([
-            'name' => 'required|string',
-            'parent_id' => 'nullable|numeric'
-		]);
-        
+    public function store(AttractionCategoryCreateRequest $request)
+    {       
         $user = auth()->user();
 
         $data = $request->all();
         $data['created_by'] = $user->id;
 
         $attractionCategory = AttractionCategory::create($data);
-        $attractionCategory->load('parent');
+        $translationData = $request->all();
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
+        $translationData['user_id'] = $user->id;
+        $translationData['attraction_category_id'] = $attractionCategory->id;
+        $attractionCategory->createTranslations($translationData, $language);
+        $attractionCategory->load([
+            'parent',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
         return $this->responseSuccess(AttractionCategoryResource::make($attractionCategory));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AttractionCategoryUpdateRequest $request, string $id)
     {
-        $attr = $request->validate([
-            'name' => 'required|string',
-            'parent_id' => 'nullable|numeric'
-		]);
-       
         $user = auth()->user();
 
         $attractionCategory = AttractionCategory::find($id);
@@ -205,6 +243,11 @@ class AttractionCategoryController extends Controller
         }
 
         $data = $request->all();
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
         $data['updated_by'] = $user->id;
         //prevent seting parent as parent
         if (!empty($data['parent_id'])) {
@@ -214,10 +257,20 @@ class AttractionCategoryController extends Controller
                 $data['parent_id'] = null;
             } 
         }
-        if(!$attractionCategory->update($data)){
-            return $this->responseErrorSavingModel();
+        if ($language->lang_code === Language::SR_CODE) {
+            $attractionCategory->update($data); //Update default values
         }
-        $attractionCategory->load('parent');
+
+        $translationData = $request->all();
+        $translationData['user_id'] = $user->id;
+        $translationData['attraction_category_id'] = $attractionCategory->id;
+        $attractionCategory->syncTranslations($translationData, $language);
+
+        $attractionCategory->load([
+            'parent',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
+
         return $this->responseSuccess(AttractionCategoryResource::make($attractionCategory));
     }
 

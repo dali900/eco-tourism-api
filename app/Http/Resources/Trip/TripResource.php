@@ -20,10 +20,20 @@ class TripResource extends JsonResource
      */
     public function toArray($request)
     {
+        $translation = [
+			'title' => $this->title,
+			'subtitle' => $this->subtitle,
+			'summary' => $this->summary,
+			'text' => $this->text,
+		];
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = TripTranslationResource::make($this->translation);
+		}
         return [
             'id' => $this->id,
 			'title' => $this->title,
             'url_title' => Str::slug($this->title, "-"),
+            'slug' => $this->slug,
 			'subtitle' => $this->subtitle,
 			'user' => UserResource::make($this->whenLoaded('user')),
 			'attractions' => AttractionResource::collection($this->whenLoaded('attractions')),
@@ -38,6 +48,7 @@ class TripResource extends JsonResource
             'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
             'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
             'approved' => $this->approved == 1 ? true : false,
+            't' => $translation,
 		];
     }
 }

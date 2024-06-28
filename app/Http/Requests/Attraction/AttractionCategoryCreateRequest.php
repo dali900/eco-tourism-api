@@ -5,7 +5,7 @@ namespace App\Http\Requests\Attraction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class AttractionCreateRequest extends FormRequest
+class AttractionCategoryCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,22 +26,10 @@ class AttractionCreateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', 'max:128', Rule::unique('attractions', 'name')
+                'required', 'string', 'max:128', Rule::unique('attraction_categories', 'name')
             ],
-            'order_num' => [
-                'numeric', 'nullable', Rule::unique('attractions', 'order_num')
-            ],
-            'category_id' => 'required|numeric',
+            'parent_id' => 'nullable|numeric',
             'selected_language_id' => 'required|numeric',
-            'summary' => 'required|string|max:512',
-            'content' => 'required|string',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'user_id.unique' => 'Korisnik već poseduje pretplatu.',
         ];
     }
 
@@ -54,10 +42,7 @@ class AttractionCreateRequest extends FormRequest
     {
         return [
             'name' => 'Naziv',
-            'category_id' => 'Kategorija',
-            'summary' => 'Sažetak',
-            'content' => 'Sadržaj',
-            'order_num' => 'Redni broj za naj noviji sadržaj',
+            'parent_id' => 'Nadkategorija',
             'selected_language_id' => 'Izabrani jezik',
         ];
     }

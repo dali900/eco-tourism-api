@@ -13,6 +13,7 @@ class TripTranslation extends Model
     protected $fillable = [
         'trip_id',
         'language_id',
+        'lang_code',
         'title',
         'subtitle',
         'text',

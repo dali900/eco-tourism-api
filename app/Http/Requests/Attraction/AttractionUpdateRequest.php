@@ -32,6 +32,7 @@ class AttractionUpdateRequest extends FormRequest
                 'numeric', 'nullable', 'sometimes', Rule::unique('attractions', 'order_num')->ignore($this->id)
             ],
             'category_id' => 'required|numeric',
+            'selected_language_id' => 'required|numeric',
             'summary' => 'required|string|max:512',
             'content' => 'required|string',
         ];
@@ -49,7 +50,8 @@ class AttractionUpdateRequest extends FormRequest
             'category_id' => 'Kategorija',
             'summary' => 'Sažetak',
             'content' => 'Sadržaj',
-            'order_num' => 'Redni broj za naj noviji sadržaj'
+            'order_num' => 'Redni broj za naj noviji sadržaj',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 

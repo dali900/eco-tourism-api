@@ -77,7 +77,8 @@ Route::prefix('/news')->group(function () {
 //Trips
 Route::prefix('/trips')->group(function () {
     Route::get('/', [TripController::class, 'index']);
-    Route::get('/{id}', [TripController::class, 'get']);
+    Route::get('/{id}/{langId?}', [TripController::class, 'get']);
+    Route::get('/admin/{id}/{langId?}', [TripController::class, 'get']);
 });
 
 //News categories
@@ -117,7 +118,7 @@ Route::prefix('/attraction-categories')->group(function () {
     Route::get('/roots', [AttractionCategoryController::class, 'getRoots']);
     Route::get('/tree', [AttractionCategoryController::class, 'getTree']);
     Route::get('/page-data', [AttractionCategoryController::class, 'getAttractionsPageData']);
-    Route::get('/{id}', [AttractionCategoryController::class, 'get']);
+    Route::get('/admin/{id}/{langId?}', [AttractionCategoryController::class, 'adminGet']);
 });
 
 //Place
@@ -164,8 +165,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Attractions
     Route::prefix('/attractions')->middleware('role:author')->group(function () {
-        Route::post('/{langId}', [AttractionController::class, 'store']);
-        Route::put('/{id}/{langId}', [AttractionController::class, 'update']);
+        Route::post('/', [AttractionController::class, 'store']);
+        Route::put('/{id}', [AttractionController::class, 'update']);
         Route::delete('/{id}', [AttractionController::class, 'destroy']);
         Route::delete('/file/{id}', [AttractionController::class, 'deleteFile']);
         /* Route::post('/{id}/languages/{langId}', [AttractionController::class, 'createTranslation']);

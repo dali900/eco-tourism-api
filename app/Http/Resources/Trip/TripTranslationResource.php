@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Attraction;
+namespace App\Http\Resources\Trip;
 
 use App\Http\Resources\FileResource;
 use App\Http\Resources\PlaceResource;
@@ -8,7 +8,7 @@ use App\Http\Resources\UserResource;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AttractionTranslationResource extends JsonResource
+class TripTranslationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,6 @@ class AttractionTranslationResource extends JsonResource
     {
         return [
 			'id' => $this->id,
-			'name' => $this->name,
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'attraction_id' => $this->attraction_id,
@@ -30,7 +29,7 @@ class AttractionTranslationResource extends JsonResource
 			'subtitle' => $this->subtitle,
 			'summary' => $this->summary,
 			'slug' => $this->slug,
-			'content' => $this->content,
+			'text' => $this->text,
 			'approved' => $this->approved == 1 ? true : false,
 			'created_by_user' => UserResource::make($this->whenLoaded('createdByUser')),
 			'updated_by_user' => UserResource::make($this->whenLoaded('updatedByUser')),

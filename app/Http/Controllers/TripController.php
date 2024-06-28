@@ -32,9 +32,14 @@ class TripController extends Controller
      */
     public function index(Request $request)
     {
+        $langId = getLnaguageId($request);
+
         $perPage = $request->perPage ?? 20;
-        $trips = $this->tripRepository->getAllFiltered($request->all());
-        $trips->with(['thumbnail']);
+        $trips = Trip::with([
+            'thumbnail',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
+        $trips = $this->tripRepository->getAllFiltered($request->all(), $trips);
         $newsPaginated = $trips->paginate($perPage);
         $tripResource = TripResourcePaginated::make($newsPaginated);
         return $this->responseSuccess($tripResource);
@@ -121,7 +126,22 @@ class TripController extends Controller
         if (!empty($trip->images) && !empty($trip->images[0])) {
             $trip->images[0]->makeThumbnail();
         }
-        $trip->load(['images', 'thumbnail', 'attractions']);
+
+        $translationData = $request->all();
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
+        $translationData['user_id'] = $user->id;
+        $translationData['trip_id'] = $trip->id;
+        $trip->createTranslations($translationData, $language);
+        $trip->load([
+            'images',
+            'thumbnail',
+            'attractions',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
 
         return $this->responseSuccess(TripResource::make($trip));
     }
@@ -142,12 +162,22 @@ class TripController extends Controller
         $data['updated_by'] = $user->id;
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
         $data['slug'] = Str::slug(substr($data['title'], 0, 128));
+        
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
 
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
             $trip->saveFiles($data['tmp_files'], 'trip/');
-        }      
-        $trip->update($data);
+        } 
+
+        if ($language->lang_code === Language::SR_CODE) {
+            $trip->update($data);//Update default values
+        }
+        
         if (!empty($data['attraction_ids'])) {
             $pivotData = [];
             foreach ($data['attraction_ids'] as $id) {
@@ -155,7 +185,17 @@ class TripController extends Controller
             }
             $trip->attractions()->sync($pivotData);
         }
-        $trip->load(['images', 'thumbnail', 'attractions']);
+
+        $translationData = $request->all();
+        $translationData['user_id'] = $user->id;
+        $translationData['trip_id'] = $trip->id;
+        $trip->syncTranslations($translationData, $language);
+        $trip->load([
+            'images',
+            'thumbnail',
+            'attractions',
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+        ]);
 
         return $this->responseSuccess(TripResource::make($trip));
     }
