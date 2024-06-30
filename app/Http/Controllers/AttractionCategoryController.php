@@ -96,6 +96,7 @@ class AttractionCategoryController extends Controller
 
         return $this->responseSuccess(AttractionCategoryResource::make($attractionCategory));
     }
+    
 
     /**
      * Display a listing of the resource.
