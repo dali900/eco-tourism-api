@@ -27,6 +27,9 @@ class PlaceCreateRequest extends FormRequest
                 'required', 'string', 'max:128', Rule::unique('places', 'name')
             ],
             'description' => 'nullable|string',
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -40,6 +43,7 @@ class PlaceCreateRequest extends FormRequest
         return [
             'name' => 'Naziv',
             'description' => 'Opis',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 }

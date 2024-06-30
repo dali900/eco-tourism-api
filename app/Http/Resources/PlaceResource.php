@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Attraction\AttractionResource;
+use App\Http\Resources\PlaceTranslationResource;
 use App\Http\Resources\UserResource;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,6 +18,14 @@ class PlaceResource extends JsonResource
      */
     public function toArray($request)
     {
+		$translation = [
+			'name' => $this->name,
+			'description' => $this->description,
+		];
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = PlaceTranslationResource::make($this->translation);
+		}
+
         return [
 			'id' => $this->id,
 			'name' => $this->name,
@@ -38,6 +47,8 @@ class PlaceResource extends JsonResource
 			'updated_at' => $this->updated_at,
 			'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("d.m.Y.") : null,
 			'updated_at_formated' => $this->updated_at ? Carbon::parse($this->updated_at)->format("d.m.Y.") : null,
+			't' => $translation,
+            'translations' => PlaceTranslationResource::collection($this->whenLoaded('translations')),
 		];
     }
 

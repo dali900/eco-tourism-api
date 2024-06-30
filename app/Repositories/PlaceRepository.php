@@ -20,9 +20,9 @@ class PlaceRepository extends ModelRepository
      * @param array $params
      * @return Place
      */
-    public function getAllFiltered($params = [])
+    public function getAllFiltered($params = [], $queryBuilder = null)
     {
-        $model = $this->model;
+        $model = $queryBuilder ?? $this->model;
 
         //Global search
         if (!empty($params['global'])) {

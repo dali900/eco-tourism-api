@@ -31,6 +31,9 @@ class PlaceUpdateRequest extends FormRequest
                     ->ignore($this->id)
             ],
             'description' => 'nullable|string',
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -44,6 +47,7 @@ class PlaceUpdateRequest extends FormRequest
         return [
             'name' => 'Naziv',
             'description' => 'Opis',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 }

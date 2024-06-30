@@ -104,7 +104,10 @@ class AttractionCategoryController extends Controller
     {
         $langId = getLnaguageId($request);
         $perPage = $request->perPage ?? 20;
-        $category = AttractionCategory::find($id);
+        $category = AttractionCategory::with([
+            'translation' => fn ($query) => $query->where('language_id', $langId)
+        ])
+        ->find($id);
 
         if (!$category) {
             return $this->responseNotFound();
@@ -192,7 +195,10 @@ class AttractionCategoryController extends Controller
                 'translation' => fn ($query) => $query->where('language_id', $langId),
             ]);
         });
-        $trips = Trip::with('thumbnail')
+        $trips = Trip::with([
+                'thumbnail',
+                'translation' => fn ($query) => $query->where('language_id', $langId),
+            ])
             ->limit(3)
             ->orderBy('id', 'desc')
             ->get();

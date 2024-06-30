@@ -28,7 +28,7 @@ class TripTranslation extends Model
         'title',
         'subtitle',
         'summary',
-        'content',
+        'text',
     ];
 
     /**

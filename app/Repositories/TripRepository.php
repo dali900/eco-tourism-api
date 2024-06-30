@@ -17,7 +17,7 @@ class TripRepository extends ModelRepository
      * @param array $params
      * @return void
      */
-    public function getAllFiltered($params = [], $queryBuilder)
+    public function getAllFiltered($params = [], $queryBuilder = null)
     {
         $model = $queryBuilder ?? $this->model;
         

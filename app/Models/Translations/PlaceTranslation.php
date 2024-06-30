@@ -13,6 +13,7 @@ class PlaceTranslation extends Model
     protected $fillable = [
         'place_id',
         'language_id',
+        'lang_code',
         'name',
         'description',
         'approved',

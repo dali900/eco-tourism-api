@@ -49,6 +49,7 @@ class TripResource extends JsonResource
             'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
             'approved' => $this->approved == 1 ? true : false,
             't' => $translation,
+            'translations' => TripTranslationResource::collection($this->whenLoaded('translations')),
 		];
     }
 }

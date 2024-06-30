@@ -187,14 +187,10 @@ class UserController extends Controller
     {
         $user = $this->createUser($request);
 
-        $userProfile = $this->userProfileRepository->getByUserId($user->id);
+        //$userProfile = $this->userProfileRepository->getByUserId($user->id);
 
-        return $this->responseSuccess([
-            'user' => UserProfileResource::make($user),
-            'user_profile' => UserProfileResourceQueried::make($userProfile)
-        ]);
+        return $this->responseSuccess(UserProfileResource::make($user));
         
-
     }
 
     private function createUser (Request $request) {
@@ -202,9 +198,7 @@ class UserController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|string|unique:users,email',
-            'company_name' => 'required|string',
-            'phone_number' => 'required|string',
-            'position' => 'required|string',
+            'phone_number' => 'nullable',
             'password' => 'required|string|min:8',
             'password_confirmation' => 'required|min:8|same:password',
         ], [
@@ -246,8 +240,7 @@ class UserController extends Controller
             'first_name' => 'sometimes|required|string',
             'last_name' => 'sometimes|required|string',
             'email' => 'sometimes|required|string|unique:users,email,'.$id,
-            'company_name' => 'nullable|string',
-            'phone_number' => 'nullable|string',
+            'phone_number' => 'nullable',
             'password' => 'sometimes|required|string|min:8|confirmed',
             //'apps' => "required|array|min:1",
             //'apps.*' => "in:$appsString"
@@ -279,9 +272,7 @@ class UserController extends Controller
             $userResource = UserResource::make($user);
         }
 
-        return $this->responseSuccess([
-            'user' => $userResource
-        ]);
+        return $this->responseSuccess($userResource);
     }
 
     /**

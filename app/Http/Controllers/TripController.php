@@ -57,7 +57,8 @@ class TripController extends Controller
             'images', 
             'thumbnail', 
             'attractions.thumbnail',
-            'translations' => fn ($query) => $query->where('language_id', $langId),
+            'attractions.translation' => fn ($query) => $query->where('language_id', $langId),
+            'translation' => fn ($query) => $query->where('language_id', $langId),
         ])->find($id);
         if(!$trip){
             return $this->responseNotFound();
@@ -86,7 +87,7 @@ class TripController extends Controller
             'images', 
             'thumbnail', 
             'attractions.thumbnail',
-            'translations' => fn ($query) => $query->where('language_id', $langId),
+            'translations'
         ])->find($id);
         if(!$trip){
             return $this->responseNotFound();

@@ -28,14 +28,10 @@ class UserProfileResource extends JsonResource
             'email' => $this->email,
             'role' => $this->role,
             'role_name' => $this->roleName,
-            'phone_number' => $this->phone_number,
-            'position' => $this->position,
             'access' => $this->getAccessLevel(),
-            'status' => $this->status,
             'active' => $this->active,
             'note' => $this->note,
-            //'subscriptions' => SubscriptionResource::collection($this->subscriptions),
-            'subscriptions_count' => $this->subscriptions_count,
+            /* 'subscriptions_count' => $this->subscriptions_count,
             'subscriptions' => $this->when($this->relationLoaded('subscriptions'), function() {
                 return SubscriptionResource::collection($this->subscriptions);
             }),
@@ -44,7 +40,7 @@ class UserProfileResource extends JsonResource
                 return FreeTrialResource::collection($this->freeTrials);
             }),
             'last_subscription' => SubscriptionResource::make($this->lastSubscription),
-            'last_free_trial' => FreeTrialResource::make($this->lastFreeTrial),
+            'last_free_trial' => FreeTrialResource::make($this->lastFreeTrial), */
             'company_name' => $this->company_name,
             'company_id' => null,
             'last_login_formated' => $this->last_login ? $lastLoginCarbon->format("d.m.Y. H:i:s") : null,

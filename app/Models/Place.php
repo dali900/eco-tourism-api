@@ -46,6 +46,16 @@ class Place extends Model
     }
 
     /**
+     * Translation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translation()
+    {
+        return $this->hasOne(PlaceTranslation::class);
+    }
+
+    /**
      * Attraction
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

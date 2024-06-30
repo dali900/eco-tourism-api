@@ -62,6 +62,7 @@ class AttractionController extends Controller
             'images',
             'thumbnail',
             'place',
+            'place.translation' => fn ($query) => $query->where('language_id', $langId),
         ])->find($id);
         if(!$attraction){
             return $this->responseNotFound();

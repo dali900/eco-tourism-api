@@ -77,8 +77,8 @@ Route::prefix('/news')->group(function () {
 //Trips
 Route::prefix('/trips')->group(function () {
     Route::get('/', [TripController::class, 'index']);
+    Route::get('/admin/{id}/{langId?}', [TripController::class, 'adminGet']);
     Route::get('/{id}/{langId?}', [TripController::class, 'get']);
-    Route::get('/admin/{id}/{langId?}', [TripController::class, 'get']);
 });
 
 //News categories
@@ -124,7 +124,8 @@ Route::prefix('/attraction-categories')->group(function () {
 //Place
 Route::prefix('/places')->group(function () {
     Route::get('/', [PlaceController::class, 'index']);
-    Route::get('/{id}', [PlaceController::class, 'get']);
+    Route::get('/admin/{id}/{langId?}', [PlaceController::class, 'adminGet']);
+    Route::get('/{id}/{langId?}', [PlaceController::class, 'get']);
 });
 
 //Banners for everyone
