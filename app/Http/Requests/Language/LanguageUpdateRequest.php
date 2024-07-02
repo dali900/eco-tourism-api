@@ -24,10 +24,10 @@ class LanguageUpdateRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', Rule::unique('languages', 'name')
+                'required|sometimes', 'string', Rule::unique('languages', 'name')
             ],
-            'lang_code' => 'required|string',
-            'translated_name' => 'required|string',
+            'lang_code' => 'required|sometimes|string',
+            'translated_name' => 'required|sometimes|string',
         ];
     }
 

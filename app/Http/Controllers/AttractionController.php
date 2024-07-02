@@ -58,6 +58,7 @@ class AttractionController extends Controller
         $langId = getSelectedOrDefaultLangId($langId);
         $attraction = Attraction::with([
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
+            'category.translation' => fn ($query) => $query->where('language_id', $langId),
             'translation' => fn ($query) => $query->where('language_id', $langId),
             'images',
             'thumbnail',
