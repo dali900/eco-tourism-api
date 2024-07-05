@@ -6,9 +6,11 @@ use App\Http\Requests\News\NewsCreateRequest;
 use App\Http\Requests\News\NewsUpdateRequest;
 use App\Http\Resources\News\NewsResource;
 use App\Http\Resources\News\NewsResourcePaginated;
+use App\Models\Language;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\News;
+use App\Models\Translations\NewsTranslation;
 use App\Repositories\NewsRepository;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -32,12 +34,66 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function get($id)
+    public function get($id, string $langId = null)
     {
-        $news = News::with(['images', 'categories', 'thumbnail'])->find($id);
+        $langId = getSelectedOrDefaultLangId($langId);
+        $news = News::with([
+                'images',
+                'categories',
+                'thumbnail',
+                'translation' => fn ($query) => $query->where('language_id', $langId)
+            ])
+            ->find($id);
         if(!$news){
             return $this->responseNotFound();
         }
+        $news->translateModelByLangId($langId);
+
+        $categoryIds = $news->categories->pluck('id')->all();
+        $newsCategories = [];
+        foreach ($news->categories as $category) {
+            $categories = $category->ancestorsAndSelf()->get()->toArray();
+            $newsCategories[] = $categories;
+        }
+        $selectedCategories = [];
+        foreach ($categoryIds as $cid) {
+            $selectedCategories[$cid] = true;
+        }
+
+        return $this->responseSuccess([
+            'news' => NewsResource::make($news),
+            'selected_categories' => $selectedCategories,
+            'news_categories' => $newsCategories
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function adminGet($id, string $langId = null)
+    {
+        $news = News::with([
+                'images',
+                'categories',
+                'thumbnail',
+                'translations',
+            ])
+            ->find($id);
+        if(!$news){
+            return $this->responseNotFound();
+        }
+
+        if ($langId) {
+            if (!$news->translateModelByLangId($langId)) {
+                $news->emptyModel(new NewsTranslation());
+            } 
+        } else {
+            $news->translateModelByLangCode(Language::SR_CODE);
+        }
+
         $categoryIds = $news->categories->pluck('id')->all();
         $newsCategories = [];
         foreach ($news->categories as $category) {
@@ -87,6 +143,12 @@ class NewsController extends Controller
         $data['slug'] = Str::slug(substr($data['title'], 0, 128));
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
 
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
+
         $news = News::create($data);
         if (!empty($data['category_ids'])) {
             $news->categories()->attach($data['category_ids']);
@@ -98,7 +160,17 @@ class NewsController extends Controller
         if (!empty($news->images) && !empty($news->images[0])) {
             $news->images[0]->makeThumbnail();
         }
-        $news->load(['images', 'thumbnail', 'categories']);
+
+        $translationData = $request->all();
+        $translationData['user_id'] = $user->id;
+        $translationData['news_id'] = $news->id;
+        $news->createTranslations($translationData, $language);
+        $news->load([
+            'images',
+            'thumbnail',
+            'categories',
+            'translations'
+        ]);
 
         return $this->responseSuccess(NewsResource::make($news));
     }
@@ -124,15 +196,30 @@ class NewsController extends Controller
         $data['publish_date'] = !empty($data['publish_date']) ? Carbon::createFromFormat('d.m.Y.', $data['publish_date']) : date('Y-m-d H:i:s');
         $data['slug'] = Str::slug(substr($data['title'], 0, 128));
 
+        $langId = $data['selected_language_id'];
+        $language = Language::find($langId);
+        if(!$language){
+            return $this->responseNotFound();
+        }
+
         //Save uploaded temp files
         if(!empty($data['tmp_files'])){
             $news->saveFiles($data['tmp_files'], 'news/');
         }      
-        $news->update($data);
+
+        if ($language->lang_code === Language::SR_CODE) {
+            $news->update($data); //Update default values
+        }
+        $translationData = $request->all();
+        $translationData['user_id'] = $user->id;
+        $translationData['news_id'] = $news->id;
+        $news->syncTranslations($translationData, $language);
+
         if (!empty($data['category_ids'])) {
             $news->categories()->sync($data['category_ids']);
         }
-        $news->load(['images', 'thumbnail', 'categories']);
+
+        $news->load(['images', 'thumbnail', 'categories', 'translations']);
 
         return $this->responseSuccess(NewsResource::make($news));
     }

@@ -40,6 +40,9 @@ class NewsUpdateRequest extends FormRequest
             'category_ids.*' => [
                 'sometimes', 'numeric'
             ],
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -56,6 +59,7 @@ class NewsUpdateRequest extends FormRequest
             'summary' => 'Sažetak',
             'text' => 'Tekst',
             'category_ids' => 'Kategorija',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 

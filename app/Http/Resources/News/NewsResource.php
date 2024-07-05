@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\News;
 
+use App\Http\Resources\News\NewsTranslationResource;
 use App\Http\Resources\FileResource;
 use App\Http\Resources\UserResource;
 use Carbon\Carbon;
@@ -19,6 +20,16 @@ class NewsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $translation = [
+			'title' => $this->title,
+			'subtitle' => $this->subtitle,
+			'summary' => $this->summary,
+			'text' => $this->content,
+		];
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = NewsTranslationResource::make($this->translation);
+		}
+
         return [
             'id' => $this->id,
 			'title' => $this->title,
@@ -36,6 +47,8 @@ class NewsResource extends JsonResource
             'default_image' => FileResource::make($this->whenLoaded('defaultImage')),
             'thumbnail' => FileResource::make($this->whenLoaded('thumbnail')),
             'approved' => $this->approved == 1 ? true : false,
+			't' => $translation,
+            'translations' => NewsTranslationResource::collection($this->whenLoaded('translations')),
 		];
     }
 }

@@ -71,7 +71,8 @@ Route::prefix('/languages')->group(function () {
 //News
 Route::prefix('/news')->group(function () {
     Route::get('/', [NewsController::class, 'index']);
-    Route::get('/{id}', [NewsController::class, 'get']);
+    Route::get('/admin/{id}/{langId?}', [NewsController::class, 'adminGet']);
+    Route::get('/{id}/{langId?}', [NewsController::class, 'get']);
 });
 
 //Trips
@@ -87,7 +88,8 @@ Route::prefix('/news-categories')->group(function () {
     Route::get('/category/{id}', [NewsCategoryController::class, 'getCategoryNews']);
     Route::get('/roots', [NewsCategoryController::class, 'getRoots']);
     Route::get('/tree', [NewsCategoryController::class, 'getTree']);
-    Route::get('/{id}', [NewsCategoryController::class, 'get']);
+    Route::get('/{id}/{langId}', [NewsCategoryController::class, 'get']);
+    Route::get('/admin/{id}/{langId?}', [NewsCategoryController::class, 'adminGet']);
 });
 
 //Articles for everyone

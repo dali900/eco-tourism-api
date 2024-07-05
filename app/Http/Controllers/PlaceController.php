@@ -134,6 +134,7 @@ class PlaceController extends Controller
         $place->load([
             'images',
             'thumbnail',
+            'translations',
             'translation' => fn ($query) => $query->where('language_id', $langId),
         ]);
 
@@ -180,6 +181,7 @@ class PlaceController extends Controller
         $place->load([
             'images',
             'thumbnail',
+            'translations',
             'translation' => fn ($query) => $query->where('language_id', $langId),
         ]);
         

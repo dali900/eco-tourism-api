@@ -40,6 +40,9 @@ class NewsCreateRequest extends FormRequest
             'category_ids.*' => [
                 'required', 'numeric'
             ],
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -56,6 +59,7 @@ class NewsCreateRequest extends FormRequest
             'summary' => 'Sažetak',
             'text' => 'Tekst',
             'category_ids' => 'Kategorija',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 }

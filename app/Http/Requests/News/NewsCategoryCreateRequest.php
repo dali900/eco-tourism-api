@@ -37,6 +37,9 @@ class NewsCategoryCreateRequest extends FormRequest
             'order_num' => [
                 'nullable', 'numeric'
             ],
+            'selected_language_id' => [
+                'required', 'numeric'
+            ]
         ];
     }
 
@@ -52,6 +55,7 @@ class NewsCategoryCreateRequest extends FormRequest
             'parent_id' => 'Pripada',
             'visible' => 'Vidljiv',
             'order_num' => 'Redni broj',
+            'selected_language_id' => 'Izabrani jezik',
         ];
     }
 

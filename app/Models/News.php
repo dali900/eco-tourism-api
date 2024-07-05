@@ -3,25 +3,26 @@
 namespace App\Models;
 
 use App\Models\Scopes\NewsScope;
+use App\Models\Translations\NewsTranslation;
 use App\Traits\HandleFiles;
+use App\Traits\Translates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    use HasFactory, HandleFiles;
+    use HasFactory, HandleFiles, Translates;
 
     protected $fillable = [
         'title',
         'subtitle',
-        'created_by',
-        'updated_by',
         'text',
         'summary',
-        'publish_date',
-        'file_path',
         'slug',
         'approved',
+        'publish_date',
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -30,6 +31,26 @@ class News extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new NewsScope);
+    }
+
+    /**
+     * Translations
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translations()
+    {
+        return $this->hasMany(NewsTranslation::class);
+    }
+
+    /**
+     * Translation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translation()
+    {
+        return $this->hasOne(NewsTranslation::class);
     }
 
     /**

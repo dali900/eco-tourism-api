@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\News;
 
-use App\Http\Resources\UserResource;
 use Carbon\Carbon;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\News\NewsCategoryTranslationResource;
 
 class NewsCategoryResource extends JsonResource
 {
@@ -16,6 +17,12 @@ class NewsCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
+        $translation = [
+			'name' => $this->name,
+		];
+		if ($this->relationLoaded('translation') && $this->translation) {
+			$translation = NewsCategoryTranslationResource::make($this->translation);
+		}
         return [
             'id' => $this->id,
             'key' => $this->id,
@@ -51,13 +58,15 @@ class NewsCategoryResource extends JsonResource
             'ancestorsAndSelf' => $this->when($this->relationLoaded('ancestorsAndSelf'), function () {
                 return NewsCategoryResource::collection($this->ancestorsAndSelf);
             }),
-            'children' => $this->when($this->relationLoaded('allChildren'), function () {
-                return NewsCategoryResource::collection($this->allChildren);
+            'children' => $this->when($this->relationLoaded('children'), function () {
+                return NewsCategoryResource::collection($this->children);
             }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_formated' => $this->created_at ? Carbon::parse($this->created_at)->format("F d, Y") : null,
             'updated_at_formated' => $this->updated_at ? Carbon::parse($this->updated_at)->format("F d, Y") : null,
+            't' => $translation,
+            'translations' => NewsCategoryTranslationResource::collection($this->whenLoaded('translations')),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Attraction\AttractionResource;
+use App\Http\Resources\News\NewsCategoryResource;
 use App\Http\Resources\News\NewsResource;
 use App\Models\Attraction;
 use App\Models\Language;
@@ -25,16 +26,20 @@ class HomeController extends Controller
         return $this->responseSuccess();
     }
 
-    public function getMenu()
+    public function getMenu(Request $request)
     {
+        $langId = getLnaguageId($request);
         //TODO: cache
         $newsCategories = NewsCategory::treeOf(function ($q) {
             $q->whereNull('parent_id');
-        })->get()->toTree();
+        })
+        ->with([
+            't' => fn ($query) => $query->where('language_id', $langId),
+        ])
+        ->get()->toTree();
 
-        return $this->responseSuccess([
-            'news_menu' => $newsCategories
-        ]);
+        return $this->responseSuccess($newsCategories);
+        //return $this->responseSuccess(NewsCategoryResource::collection($newsCategories));
     }
 
     /**
