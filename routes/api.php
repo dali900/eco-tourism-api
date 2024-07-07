@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AdCategoryController;
+use App\Http\Controllers\AdController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -123,6 +125,23 @@ Route::prefix('/attraction-categories')->group(function () {
     Route::get('/admin/{id}/{langId?}', [AttractionCategoryController::class, 'adminGet']);
 });
 
+//Ad categories
+Route::prefix('/ad-categories')->group(function () {
+    Route::get('/', [AdCategoryController::class, 'index']);
+    Route::get('/category/{id}', [AdCategoryController::class, 'getCatagoryAttractions']);
+    //Route::get('/roots', [AdCategoryController::class, 'getRoots']);
+    Route::get('/tree', [AdCategoryController::class, 'getTree']);
+    Route::get('/admin/{id}/{langId?}', [AdCategoryController::class, 'adminGet']);
+});
+
+//Ads
+Route::prefix('/ads')->group(function () {
+    Route::get('/', [AdController::class, 'index']);
+    Route::get('/admin/{id}/{langId?}', [AdController::class, 'adminGet'])->middleware('role:admin');
+    Route::get('/{id}/{langId?}', [AdController::class, 'get']);
+    Route::post('/download-file/{id}', [AdController::class, 'downloadFile']);
+});
+
 //Place
 Route::prefix('/places')->group(function () {
     Route::get('/', [PlaceController::class, 'index']);
@@ -181,6 +200,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [AttractionCategoryController::class, 'store']);
         Route::put('/{id}', [AttractionCategoryController::class, 'update']);
         Route::delete('/{id}', [AttractionCategoryController::class, 'destroy']);
+    });
+    //Ad categories
+    Route::prefix('/ad-categories')->middleware('role:author')->group(function () {
+        Route::post('/', [AdCategoryController::class, 'store']);
+        Route::put('/{id}', [AdCategoryController::class, 'update']);
+        Route::delete('/{id}', [AdCategoryController::class, 'destroy']);
+    });
+    //Ad
+    Route::prefix('/ads')->middleware('role:author')->group(function () {
+        Route::post('/', [AdController::class, 'store']);
+        Route::put('/{id}', [AdController::class, 'update']);
+        Route::delete('/{id}', [AdController::class, 'destroy']);
+        Route::delete('/file/{id}', [AdController::class, 'deleteFile']);
     });
     //Places
     Route::prefix('/places')->middleware('role:author')->group(function () {

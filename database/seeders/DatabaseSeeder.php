@@ -30,6 +30,9 @@ class DatabaseSeeder extends Seeder
 			NewsCategorySeeder::class,
 			NewsSeeder::class,
             AttractionTranslationSeeder::class,
+            AdCategorySeeder::class,
+            AdSeeder::class,
+            AdTranslationSeeder::class,
 		]);
     }
 }

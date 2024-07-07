@@ -28,3 +28,16 @@ if (! function_exists('getSelectedOrDefaultLangId')) {
         return $selectedLangId;
     }
 }
+
+/**
+ * Format money
+ */
+if (! function_exists('formatMoney')) {
+    function formatMoney($amount = 0) {
+        // Round up the amount to the nearest whole number
+        $amount = ceil($amount);
+
+        // Format the amount as money without decimal places
+        return number_format($amount, 0, ',', '.');
+    }
+}
