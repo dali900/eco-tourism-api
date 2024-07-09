@@ -25,7 +25,7 @@ class AdCategory extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function attractions()
+    public function ads()
     {
         return $this->hasMany(Ad::class, 'category_id');
     }
@@ -35,7 +35,7 @@ class AdCategory extends Model
      *
      * @return void
      */
-    public function recursiveAttractions()
+    public function recursiveAds()
     {
         return $this->hasManyOfDescendantsAndSelf(Ad::class, 'category_id');
     }

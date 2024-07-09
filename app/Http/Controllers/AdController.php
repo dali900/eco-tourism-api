@@ -40,6 +40,7 @@ class AdController extends Controller
             'translation' => fn ($query) => $query->where('language_id', $langId),
             'place.translation' => fn ($query) => $query->where('language_id', $langId),
             'category.translation' => fn ($query) => $query->where('language_id', $langId),
+            'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
         ]);
         $ads = $this->adRepository->getAllFiltered($request->all(), $ads);
         $adsPaginated = $ads->paginate($perPage);
@@ -91,11 +92,7 @@ class AdController extends Controller
             $ad->translateModelByLangCode(Language::SR_CODE);
         }
 
-        return $this->responseSuccess([
-            'ad' => AdResource::make($ad),
-            'languages' => Language::get(),
-            'places' => Place::get()
-        ]);
+        return $this->responseSuccess(AdResource::make($ad));
     }
 
     /**

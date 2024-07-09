@@ -100,7 +100,7 @@ class AdCategoryController extends Controller
      */
     public function getTree(Request $request)
     {
-        $adCategories = AdCategory::select('id as key', 'laravel_cte.*')
+        $adCategories = AdCategory::select('id as key', 'name as label', 'laravel_cte.*')
         ->treeOf(function ($q) {
             $q->whereNull('parent_id');
         })

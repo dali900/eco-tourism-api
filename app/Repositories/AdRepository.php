@@ -124,10 +124,15 @@ class AdRepository extends ModelRepository
             $sortField = $params['sortField'];
             if ($params['sortField'] == 'created_at_formated') $sortField = 'id';
             if ($params['sortField'] == 'updated_at_formated') $sortField = 'updated_at';
+            if ($params['sortField'] == 'expires_at_formated') $sortField = 'expires_at';
 
             if ($params['sortField'] == 'user_name') {
                 $model = $model->join('users', $this->tableName.".user_id", "=", "users.id")->select($this->tableName.'.*');
                 $sortField = "users.name";
+            }
+            if ($params['sortField'] == 'category') {
+                $model = $model->join('ad_categories', $this->tableName.".category_id", "=", "ad_categories.id")->select($this->tableName.'.*');
+                $sortField = "ad_categories.name";
             }
             $model = $model->orderBy($sortField, $direction);
         }

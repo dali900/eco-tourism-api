@@ -37,10 +37,10 @@ class AdCreateRequest extends FormRequest
             'price' => 'required|numeric',
             'currency' => 'required|string',
             'place_id' => 'required|numeric',
-            'approved' => 'nullable|numeric',
+            'suggested' => 'nullable|boolean',
+            'approved' => 'nullable|boolean',
             'published_at' => 'nullable|date',
             'expires_at' => 'required|date',
-            'suggested' => 'nullable|numeric',
             'note' => 'string|max:512',
         ];
     }
