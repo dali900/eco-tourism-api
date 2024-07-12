@@ -129,7 +129,8 @@ Route::prefix('/attraction-categories')->group(function () {
 Route::prefix('/ad-categories')->group(function () {
     Route::get('/', [AdCategoryController::class, 'index']);
     Route::get('/category/{id}', [AdCategoryController::class, 'getCatagoryAttractions']);
-    //Route::get('/roots', [AdCategoryController::class, 'getRoots']);
+    Route::get('/roots', [AdCategoryController::class, 'getRoots']);
+    Route::get('/dropdown-options', [AdCategoryController::class, 'dropdownOptions']);
     Route::get('/tree', [AdCategoryController::class, 'getTree']);
     Route::get('/admin/{id}/{langId?}', [AdCategoryController::class, 'adminGet']);
 });

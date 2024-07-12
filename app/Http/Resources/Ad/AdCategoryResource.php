@@ -28,6 +28,7 @@ class AdCategoryResource extends JsonResource
 			'id' => $this->id,
             'key' => $this->id,
             'name' => $this->name,
+            't_name' => $translation['name'],
             'order_num' => $this->order_num,
             'parent_id' => $this->parent_id,
             'parent_name' => $this->when($this->relationLoaded('parent'), function () {

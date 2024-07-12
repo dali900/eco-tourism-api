@@ -26,7 +26,7 @@ class AdCreateRequest extends FormRequest
     {
         return [
             'title' => [
-                'required', 'string', 'max:128', Rule::unique('ads', 'title')
+                'required', 'string', 'max:256'
             ],
             'order_num' => [
                 'numeric', 'nullable', Rule::unique('ads', 'order_num')
@@ -41,7 +41,7 @@ class AdCreateRequest extends FormRequest
             'approved' => 'nullable|boolean',
             'published_at' => 'nullable|date',
             'expires_at' => 'required|date',
-            'note' => 'string|max:512',
+            'note' => 'nullable|string|max:512',
         ];
     }
 

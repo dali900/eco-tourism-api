@@ -51,7 +51,12 @@ class FilesController extends Controller
             $fileModel->is_tmp = true;
             $fileModel->file_tag = $file_tag;
             $fileModel->is_public = (bool)$is_public;
+            if ($file_tag === File::TAG_IMAGE_FILE) {
+                $fileModel->resizeImageToMaxWidth();
+            }
             $filesCollection->push($fileModel);
+
+
         }
         return $this->responseSuccess(FileResource::collection($filesCollection));
     }

@@ -44,7 +44,6 @@ class File extends Model
         $thumbnailPath = $fileDir.'/'.$fileName."-thumbnail_".$this->id.'.'.$fileExt;
         Storage::copy($this->file_path, $thumbnailPath);
         // create new image instance
-        logger(storage_path('app/'.$thumbnailPath));
         $image = ImageManager::imagick()->read(storage_path('app/'.$thumbnailPath));
         $image->scale(height: 330);
         $image->save();
@@ -59,6 +58,15 @@ class File extends Model
         $fileModel->file_model_type = $this->file_model_type;
         $fileModel->save();
         return $fileModel;
+    }
+
+    public function resizeImageToMaxWidth($maxWidth = 2048): void
+    {
+        $image = ImageManager::imagick()->read(storage_path('app/'.$this->file_path));
+        if ($image && $image->width() > $maxWidth) {
+            $image->scale(width: $maxWidth);
+            $image->save();
+        }
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Ad\AdCategoryCreateRequest;
 use App\Http\Requests\Ad\AdCategoryUpdateRequest;
+use App\Http\Resources\Ad\AdCategoryDropdownResource;
+use App\Http\Resources\Ad\AdCategoryDropdownResourcePaginated;
 use App\Http\Resources\Ad\AdCategoryResource;
 use App\Http\Resources\Ad\AdCategoryResourcePaginated;
 use App\Models\AdCategory;
@@ -40,12 +42,30 @@ class AdCategoryController extends Controller
      */
     public function index(Request $request)
     {
+        $langId = getLnaguageId($request);
         $perPage = $request->perPage ?? 20;
-        $categories = $this->adCategoryRepository->getAllFiltered($request->all());
+        $categories = AdCategory::with([
+            'translation' => fn ($query) => $query->where('language_id', $langId)
+        ]);
+        $categories = $this->adCategoryRepository->getAllFiltered($request->all(), $categories);
         //$regulationTypes->groupBy('name')->select(DB::raw("max(id),max(created_at)"));
         $categories->with('parent');
         $categoriesPaginated = $categories->paginate($perPage);
         return $this->responseSuccess(AdCategoryResourcePaginated::make($categoriesPaginated));
+    }
+    
+    public function dropdownOptions(Request $request)
+    {
+        $langId = getLnaguageId($request);
+        $perPage = $request->perPage ?? 20;
+        $categories = AdCategory::with([
+            'translation' => fn ($query) => $query->where('language_id', $langId)
+        ]);
+        $categories = $this->adCategoryRepository->getAllFiltered($request->all(), $categories);
+        //$regulationTypes->groupBy('name')->select(DB::raw("max(id),max(created_at)"));
+        $categories->with('parent');
+        $categoriesPaginated = $categories->paginate($perPage);
+        return $this->responseSuccess(AdCategoryDropdownResource::collection($categoriesPaginated));
     }
 
     /**
@@ -90,6 +110,22 @@ class AdCategoryController extends Controller
         }
 
         return $this->responseSuccess(AdCategoryResource::make($adCategory));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getRoots(Request $request)
+    {
+        $langId = getLnaguageId($request);
+        $categories = AdCategory::with([
+            'translation' => fn ($query) => $query->where('language_id', $langId)
+        ])
+        ->whereNull('parent_id')->get();
+        return $this->responseSuccess(AdCategoryResource::collection($categories));
     }
 
     /**

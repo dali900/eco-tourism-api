@@ -15,12 +15,12 @@ class AdCategoryRepository extends ModelRepository
      * Filter and sort all models
      *
      * @param array $params
-     * @return AttractionCategory
+     * @return AdCategory
      */
-    public function getAllFiltered($params = [])
+    public function getAllFiltered($params = [], $queryBuilder = null)
     {
-        $tableName = "attraction_categories";
-        $model = $this->model;
+        $tableName = "ad_categories";
+        $model = $queryBuilder ?? $this->model;
 
         //Global search
         if (!empty($params['global'])) {
@@ -57,6 +57,10 @@ class AdCategoryRepository extends ModelRepository
             //Search primitive
             if (!empty($params['parent_id'])) {
                 $model = $model->where('parent_id', $params['parent_id']);
+            }
+            //Search primitive
+            if (!empty($params['roots']) && $params['roots'] == 1) {
+                $model = $model->whereNull('parent_id');
             }
         }
 

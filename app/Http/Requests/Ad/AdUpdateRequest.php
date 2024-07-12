@@ -26,7 +26,7 @@ class AdUpdateRequest extends FormRequest
     {
         return [
             'title' => [
-                'required', 'string', 'max:128', Rule::unique('ads', 'title')->ignore($this->id)
+                'required', 'string', 'max:256'
             ],
             'order_num' => [
                 'numeric', 'nullable', Rule::unique('ads', 'order_num')->ignore($this->id)
@@ -41,7 +41,7 @@ class AdUpdateRequest extends FormRequest
             'approved' => 'nullable|boolean',
             'published_at' => 'nullable|date',
             'expires_at' => 'required|date',
-            'note' => 'string|max:512',
+            'note' => 'nullable|string|max:512',
         ];
     }
 
