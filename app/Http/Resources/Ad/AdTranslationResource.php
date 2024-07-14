@@ -18,7 +18,7 @@ class AdTranslationResource extends JsonResource
     {
         return [
 			'id' => $this->id,
-			'name' => $this->name,
+			'title' => $this->title,
 			'created_at' => $this->created_at,
 			'ad_id' => $this->ad_id,
 			'language_id' => $this->language_id,

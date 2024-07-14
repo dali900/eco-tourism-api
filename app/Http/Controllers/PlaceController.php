@@ -44,6 +44,23 @@ class PlaceController extends Controller
         $placeResource = PlaceResourcePaginated::make($placesPaginated);
         return $this->responseSuccess($placeResource);
     }
+    
+    /**
+     * Display a listing of the resource.
+     */
+    public function getDropdownOptions(Request $request)
+    {
+        $langId = getLnaguageId($request);
+
+        $perPage = $request->perPage ?? 20;
+        $places = Place::with([
+            'translation' => fn ($query) => $query->where('language_id', $langId)
+        ])
+        ->get();
+        
+        $placeResource = PlaceResource::collection($places);
+        return $this->responseSuccess($placeResource);
+    }
 
     /**
      * Display the specified resource.

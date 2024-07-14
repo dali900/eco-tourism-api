@@ -29,6 +29,7 @@ class PlaceResource extends JsonResource
         return [
 			'id' => $this->id,
 			'name' => $this->name,
+			't_name' => $translation['name'],
 			'user_id' => $this->user_id,
 			'description' => $this->description,
 			'latitude' => $this->latitude,

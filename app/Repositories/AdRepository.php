@@ -71,10 +71,7 @@ class AdRepository extends ModelRepository
             if (!empty($params['category_id'])) {
                 $fieldName = 'category_id';
                 $value = $params[$fieldName];
-                $model = $model->where('category_id', $value)
-                    ->orWhereHas('category',  function ($query) use ($value) {
-                        $query->where('parent_id', $value);
-                    });
+                $model = $model->where('category_id', $value);
             }
             if (!empty($params['category_ids'])) {
                 $value = $params['category_ids'];
@@ -103,15 +100,20 @@ class AdRepository extends ModelRepository
                 $matchMode = $params[$fieldName . "_MatchMode"] ?? null;
                 $model = $this->searchDate($fieldName, $searchText, $matchMode, $model);
             }
-            if (isset($params['price_min'])) {
-                $fieldName = 'price_min';
+            if (isset($params['min_price'])) {
+                $fieldName = 'min_price';
                 $value = $params[$fieldName];
                 $model = $model->where('price', '>=', $value);
             }
-            if (isset($params['price_max'])) {
-                $fieldName = 'price_max';
+            if (isset($params['max_price'])) {
+                $fieldName = 'max_price';
                 $value = $params[$fieldName];
                 $model = $model->where('price', '<=', $value);
+            }
+            if (isset($params['place_id'])) {
+                $fieldName = 'place_id';
+                $value = $params[$fieldName];
+                $model = $model->where('place_id', $value);
             }
         }
 

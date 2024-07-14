@@ -128,11 +128,11 @@ Route::prefix('/attraction-categories')->group(function () {
 //Ad categories
 Route::prefix('/ad-categories')->group(function () {
     Route::get('/', [AdCategoryController::class, 'index']);
-    Route::get('/category/{id}', [AdCategoryController::class, 'getCatagoryAttractions']);
     Route::get('/roots', [AdCategoryController::class, 'getRoots']);
     Route::get('/dropdown-options', [AdCategoryController::class, 'dropdownOptions']);
     Route::get('/tree', [AdCategoryController::class, 'getTree']);
     Route::get('/admin/{id}/{langId?}', [AdCategoryController::class, 'adminGet']);
+    Route::get('/{id}/{langId?}', [AdCategoryController::class, 'get']);
 });
 
 //Ads
@@ -146,6 +146,7 @@ Route::prefix('/ads')->group(function () {
 //Place
 Route::prefix('/places')->group(function () {
     Route::get('/', [PlaceController::class, 'index']);
+    Route::get('/dropdown-options', [PlaceController::class, 'getDropdownOptions']);
     Route::get('/admin/{id}/{langId?}', [PlaceController::class, 'adminGet']);
     Route::get('/{id}/{langId?}', [PlaceController::class, 'get']);
 });

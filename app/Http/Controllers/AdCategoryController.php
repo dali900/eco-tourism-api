@@ -74,10 +74,13 @@ class AdCategoryController extends Controller
     public function get(string $id, string $langId = null)
     {
         $langId = getSelectedOrDefaultLangId($langId);
+        logger($langId);
         $adCategory = AdCategory::with([
-                'translation' => fn ($query) => $query->where('language_id', $langId)
-            ])
-            ->find($id);
+            'translation' => fn ($query) => $query->where('language_id', $langId),
+            'ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
+            'ancestorsAndSelf.translation' => fn ($query) => $query->where('language_id', $langId),
+        ])
+        ->find($id);
         if(!$adCategory){
             return $this->responseNotFound();
         }
