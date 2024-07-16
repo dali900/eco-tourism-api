@@ -41,6 +41,7 @@ class AdController extends Controller
             'place.translation' => fn ($query) => $query->where('language_id', $langId),
             'category.translation' => fn ($query) => $query->where('language_id', $langId),
             'category.ancestorsAndSelf' => fn ($query) => $query->orderBy('id', 'ASC'),
+            'category.ancestorsAndSelf.translation' => fn ($query) => $query->where('language_id', $langId)
         ]);
         $ads = $this->adRepository->getAllFiltered($request->all(), $ads);
         $adsPaginated = $ads->paginate($perPage);

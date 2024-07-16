@@ -24,6 +24,8 @@ class AdTranslation extends Model
     public $translateFields = [
         'title',
         'description',
+        'first_name',
+        'last_name',
     ];
 
     /**

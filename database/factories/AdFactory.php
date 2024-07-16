@@ -20,6 +20,10 @@ class AdFactory extends Factory
         $currency = $currencies[$key];
         return [
             'title' => fake()->catchPhrase(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'phone_number' => '064/12 34 567',
+            'email' => fake()->email(),
             'description' => implode(". ",fake()->sentences(30)),
             'price' => rand(10000, 100000),
             'currency' => $currency,

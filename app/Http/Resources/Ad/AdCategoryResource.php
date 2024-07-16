@@ -22,7 +22,7 @@ class AdCategoryResource extends JsonResource
 			'name' => $this->name,
 		];
 		if ($this->relationLoaded('translation') && $this->translation) {
-			$translation = AdTranslationResource::make($this->translation);
+			$translation = AdCategoryTranslationResource::make($this->translation);
 		}
         return [
 			'id' => $this->id,

@@ -34,6 +34,8 @@ class AdTranslationSeeder extends Seeder
                     return [
                         'title' => $language->lang_code.' - '.$ad->title,
                         'description' => $language->lang_code.' - '.$ad->description,
+                        'first_name' => $ad->first_name,
+                        'last_name' => $ad->last_name,
                         'ad_id' => $ad->id,
                         'language_id' => $language->id,
                         'lang_code' => $language->lang_code,
@@ -52,6 +54,8 @@ class AdTranslationSeeder extends Seeder
                     return [
                         'title' => $language->lang_code.' - '.Transliterator::toCyrillic($ad->title),
                         'description' => $language->lang_code.' - '.Transliterator::toCyrillic($ad->description),
+                        'first_name' => Transliterator::toCyrillic($ad->first_name),
+                        'last_name' => Transliterator::toCyrillic($ad->last_name),
                         'ad_id' => $ad->id,
                         'language_id' => $language->id,
                         'lang_code' => $language->lang_code,

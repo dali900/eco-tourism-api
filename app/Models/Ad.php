@@ -20,6 +20,10 @@ class Ad extends Model
 
     protected $fillable = [
         'title',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'email',
         'category_id',
         'description',
         'price',

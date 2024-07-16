@@ -28,6 +28,18 @@ class AdCreateRequest extends FormRequest
             'title' => [
                 'required', 'string', 'max:256'
             ],
+            'first_name' => [
+                'required', 'string', 'max:64'
+            ],
+            'last_name' => [
+                'required', 'string', 'max:64'
+            ],
+            'phone_Number' => [
+                'nullable', 'string', 'max:64'
+            ],
+            'email' => [
+                'nullable', 'email', 'max:64'
+            ],
             'order_num' => [
                 'numeric', 'nullable', Rule::unique('ads', 'order_num')
             ],

@@ -24,6 +24,8 @@ class AdResource extends JsonResource
             'subtitle' => $this->subtitle,
             'summary' => $this->summary,
             'content' => $this->content,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
         ];
         if ($this->relationLoaded('translation') && $this->translation) {
             $translation = AdTranslationResource::make($this->translation);
@@ -35,6 +37,10 @@ class AdResource extends JsonResource
             'category_id' => $this->category_id,
             'user_id' => $this->user_id,
             'title' => $this->title,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone_number' => $this->phone_number,
+            'email' => $this->email,
             'description' => $this->description,
             'summary' => $this->summary,
             'slug' => $this->slug,

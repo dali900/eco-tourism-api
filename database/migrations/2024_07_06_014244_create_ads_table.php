@@ -34,6 +34,10 @@ return new class extends Migration
             $table->id();
             $table->integer('category_id')->unsigned()->nullable();
             $table->string('title', 256);
+            $table->string('first_name', 64);
+            $table->string('last_name', 64);
+            $table->string('phone_number', 64)->nullable();
+            $table->string('email', 64)->nullable();
             $table->text('description')->nullable();
             $table->bigInteger('price')->unsigned()->nullable();
             $table->string('currency', 16)->nullable();
@@ -95,6 +99,8 @@ return new class extends Migration
             $table->string('lang_code', 32);
             $table->string('title', 256);
             $table->text('description')->nullable();
+            $table->string('first_name', 64)->nullable();
+            $table->string('last_name', 64)->nullable();
             $table->bigInteger('created_by')->unsigned()->nullable();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->tinyInteger('approved')->unsigned()->default(1);
