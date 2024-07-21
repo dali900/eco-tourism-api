@@ -15,6 +15,8 @@ class AdTranslation extends Model
         'ad_id',
         'language_id',
         'lang_code',
+        'first_name',
+        'last_name',
         'description',
         'approved',
         'created_by',
