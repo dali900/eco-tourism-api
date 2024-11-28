@@ -184,7 +184,6 @@ trait Translates
         $translation = $this->getTranslationByLangId($language->id);
         //Update translation
         if ($translation) {
-            logger($translation->id);
             $translation->update($translationData);
         } else {
             //Create new translation

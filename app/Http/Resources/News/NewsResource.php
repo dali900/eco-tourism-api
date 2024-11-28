@@ -24,7 +24,7 @@ class NewsResource extends JsonResource
 			'title' => $this->title,
 			'subtitle' => $this->subtitle,
 			'summary' => $this->summary,
-			'text' => $this->content,
+			'text' => $this->text,
 		];
 		if ($this->relationLoaded('translation') && $this->translation) {
 			$translation = NewsTranslationResource::make($this->translation);

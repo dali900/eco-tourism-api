@@ -37,6 +37,9 @@ class NewsCreateRequest extends FormRequest
             'text' => [
                 'required', 'string'
             ],
+            'category_ids' => [
+                'required', 'array', 'min:1'
+            ],
             'category_ids.*' => [
                 'required', 'numeric'
             ],

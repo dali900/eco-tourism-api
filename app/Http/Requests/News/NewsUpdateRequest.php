@@ -37,8 +37,11 @@ class NewsUpdateRequest extends FormRequest
             'text' => [
                 'required', 'string'
             ],
+            'category_ids' => [
+                'sometimes', 'array', 'min:1'
+            ],
             'category_ids.*' => [
-                'sometimes', 'numeric'
+                'numeric'
             ],
             'selected_language_id' => [
                 'required', 'numeric'
