@@ -110,6 +110,7 @@ class AdController extends Controller
             return $this->responseNotFound();
         }
         $data['created_by'] = $user->id;
+        $data['phone_number'] = preg_replace('/[^+\d]/', '', $data['phone_number']);
         $ad = Ad::create($data);
 
         $translationData = $request->all();
@@ -145,6 +146,7 @@ class AdController extends Controller
         }
         
         $data = $request->all();
+        $data['phone_number'] = preg_replace('/[^+\d]/', '', $data['phone_number']);
         $langId = $data['selected_language_id'];
         $language = Language::find($langId);
         if(!$language){

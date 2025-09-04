@@ -23,6 +23,7 @@ class Attraction extends Model
         'created_by',
         'updated_by',
         'place_id',
+        'phone_number',
         'latitude',
         'longitude',
         'map_link',

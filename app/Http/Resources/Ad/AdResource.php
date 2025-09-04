@@ -40,6 +40,7 @@ class AdResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone_number' => $this->phone_number,
+            'phone_number_formated' => $this->phone_number ? preg_replace('/^(\d{3})(\d{2})(\d{2})(\d{3,})$/', '$1 $2 $3 $4', $this->phone_number) : null,
             'email' => $this->email,
             'description' => $this->description,
             'summary' => $this->summary,

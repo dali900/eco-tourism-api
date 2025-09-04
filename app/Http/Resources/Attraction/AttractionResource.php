@@ -48,6 +48,8 @@ class AttractionResource extends JsonResource
 			'slug' => $this->slug,
 			'place_id' => $this->place_id,
 			'place' => PlaceResource::make($this->whenLoaded('place')),
+			'phone_number' => $this->phone_number,
+			'phone_number_formated' => $this->phone_number ? preg_replace('/^(\d{3})(\d{2})(\d{2})(\d{3,})$/', '$1 $2 $3 $4', $this->phone_number) : null,
 			'latitude' => $this->latitude,
 			'longitude' => $this->longitude,
 			'map_link' => $this->map_link,

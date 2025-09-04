@@ -114,6 +114,7 @@ class AttractionController extends Controller
             return $this->responseNotFound();
         }
         $data['created_by'] = $user->id;
+        $data['phone_number'] = preg_replace('/[^+\d]/', '', $data['phone_number']);
         $attraction = Attraction::create($data);
 
         $translationData = $request->all();
@@ -149,6 +150,7 @@ class AttractionController extends Controller
         }
         
         $data = $request->all();
+        $data['phone_number'] = preg_replace('/[^+\d]/', '', $data['phone_number']);
         $langId = $data['selected_language_id'];
         $language = Language::find($langId);
         if(!$language){
